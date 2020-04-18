@@ -1,0 +1,114 @@
+<Documentation>
+	<GLWindow>
+		<Class>
+			<summary>
+				The window
+			</summary>
+		</Class>
+		<Constructor>
+			<summary>
+				Constructor
+			</summary>
+		</Constructor>
+		<Method name="Setup">
+			<summary>
+				Setups the window.
+			</summary>
+		</Method>
+	</GLWindow>
+	<WindowSettings>
+		<Class>
+			<summary>
+				Contains all information for the window.
+				<para>Represents pretty much all options from the GameWindow-constructor.</para>
+			</summary>
+		</Class>
+		
+		<Constructors>
+			<Constructor name="0">
+				<summary>
+					Constructor
+				</summary>
+				<param name="width"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="Width"]/summary'/></param>
+				<param name="height"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="Height"]/summary'/></param>
+			</Constructor>
+			
+			<Constructor name="1">
+				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="0"]/*'/>
+				<param name="title"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="Title"]/summary'/></param>
+			</Constructor>
+			
+			<Constructor name="2">
+				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="1"]/*'/>
+				<param name="graphicsMode"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="GraphicsMode"]/summary'/></param>
+			</Constructor>
+			
+			<Constructor name="3">
+				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="2"]/*'/>
+				<param name="options"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="Options"]/summary'/></param>
+			</Constructor>
+			
+			<Constructor name="4">
+				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="3"]/*'/>
+				<param name="device"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="Device"]/summary'/></param>
+			</Constructor>
+			
+			<Constructor name="5">
+				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="4"]/*'/>
+				<param name="majorVersion"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="MajorVersion"]/summary'/></param>
+				<param name="minorVersion"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="MinorVersion"]/summary'/></param>
+			</Constructor>
+			
+			<Constructor name="6">
+				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="5"]/*'/>
+				<param name="flags"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="Flags"]/summary'/></param>
+			</Constructor>
+			
+			<Constructor name="7">
+				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="6"]/*'/>
+				<param name="sharedContext"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="SharedContext"]/summary'/></param>
+			</Constructor>
+			
+			<Constructor name="8">
+				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="7"]/*'/>
+				<param name="singleThread"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="SingleThread"]/summary'/></param>
+			</Constructor>
+		</Constructors>
+		
+		<Fields>
+			<Field name="Width">
+				<summary>	Width of the window</summary>
+			</Field>
+			<Field name="Height">
+				<summary>	Height of the window</summary>
+			</Field>
+			<Field name="Title">
+				<summary>	Title of the window</summary>
+			</Field>
+			<Field name="GraphicsMode">
+				<summary>	The OpenTK.Graphics.GraphicsMode of the GLWindow.</summary>
+			</Field>
+			<Field name="Options">
+				<summary>	GLWindow options regarding window appearance and behavior.</summary>
+			</Field>
+			<Field name="Device">
+				<summary>	The DisplayDevice to construct the GLWindow in.</summary>
+			</Field>
+			<Field name="MajorVersion">
+				<summary>	The major version for the OpenGL GraphicsContext.</summary>
+			</Field>
+			<Field name="MinorVersion">
+				<summary>	The minor version for the OpenGL GraphicsContext.</summary>
+			</Field>
+			<Field name="Flags">
+				<summary>	The GraphicsContextFlags version for the OpenGL GraphicsContext.</summary>
+			</Field>
+			<Field name="SharedContext">
+				<summary>	An IGraphicsContext to share resources with.</summary>
+			</Field>
+			<Field name="SingleThread">
+				<summary>	Should the update and render frames be fired on the same thread? If false, render and update events will be fired from separate threads.</summary>
+			</Field>
+		</Fields>
+	</WindowSettings>
+</Documentation>
