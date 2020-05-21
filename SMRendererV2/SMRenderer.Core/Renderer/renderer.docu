@@ -1,0 +1,94 @@
+<Documentation>
+	<GenericRenderer>
+		<Class>
+			<summary>	The basis class for any renderer.</summary>
+		</Class>
+		
+		<Constructor>
+			<summary>	Loads the renderer.</summary>
+		</Constructor>
+		
+		<Fields>
+			<Field name="mProgramId">
+				<summary>	Contains the ID for the shader program</summary>
+			</Field>
+			<Field name="VertexFiles">
+				<summary>	Input for all files for the vertex shader.</summary>
+				<para>Begin with the main file.</para>
+			</Field>
+			<Field name="FragmentFiles">
+				<summary>	Input for all files for the fragment shader.</summary>
+				<para>Begin with the main file.</para>
+			</Field>
+			<Field name="AttribIDs">
+				<summary>	Contains all vertex attributes with IDs.</summary>
+			</Field>
+			<Field name="FragDataIDs">
+				<summary>	Contains all fragment data names with IDs.</summary>
+			</Field>
+		</Fields>
+	</GenericRenderer>
+	<ShaderFileCollection>
+		<Class>
+			<summary>	Collectes shader files and add more specific methods to it.</summary>
+		</Class>
+		
+		<Fields>
+			<Field name="InDictionary">
+				<summary>	Contains all parameter, that all files require.</summary>
+			</Field>
+			<Field name="OutDictionary">
+				<summary>	Contains all parameter, that all files send out.</summary>
+			</Field>
+			<Field name="UniformDictionary">
+				<summary>	Contains all uniforms, that this collection need.</summary>
+			</Field>
+		</Fields>
+		
+		<Methods>
+			<Method name="Load">
+				<summary>	Loads any file that is in the list.</summary>
+				<param name="programId">The shader program, that needs to be added.</param>
+			</Method>
+		</Methods>
+	</ShaderFileCollection>
+	<ShaderFile>
+		<Class>
+			<summary>	This class saves the shader file to pass it to the render program.</summary>
+		</Class>
+		
+		<Constructor>
+			<summary>	Constructor</summary>
+			<param name="type">The type of shader you want to create.</param>
+			<param name="source">The source code of the shader.</param>
+		</Constructor>
+		
+		<Fields>
+			<Field name="Source">
+				<summary>	The source code</summary>
+			</Field>
+			<Field name="Type">
+				<summary>	The type of shader</summary>
+			</Field>
+			<Field name="ID">
+				<summary>	The ID of the shader.</summary>
+			</Field>
+			<Field name="InDictionary">
+				<summary>	Contains all parameter, that this file require.</summary>
+			</Field>
+			<Field name="OutDictionary">
+				<summary>	Contains all parameter, that this file send out.</summary>
+			</Field>
+			<Field name="UniformDictionary">
+				<summary>	Contains all uniforms, that this file need.</summary>
+			</Field>
+		</Fields>
+		
+		<Methods>
+			<Method name="Load">
+				<summary>	Loads the file.</summary>
+				<param name="programID">The shader program, that needs to be added.</param>
+			</Method>
+		</Methods>
+	</ShaderFile>
+</Documentation>

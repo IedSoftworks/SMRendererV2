@@ -1,0 +1,12 @@
+<Documentation>
+	<ShaderLoadingException>
+		<Class>
+			<summary>	This Exception is thrown if there is an error, while loading the shaders.</summary>
+		</Class>
+	</ShaderLoadingException>
+	<WindowUseException>
+		<Class>
+			<summary>	This type of Exception appears if something went wrong at loading plugins.</summary>
+		</Class>
+	</WindowUseException>
+</Documentation>

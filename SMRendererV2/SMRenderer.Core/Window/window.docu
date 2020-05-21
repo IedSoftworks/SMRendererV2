@@ -1,20 +1,61 @@
 <Documentation>
 	<GLWindow>
 		<Class>
-			<summary>
-				The window
-			</summary>
+			<summary>	The window</summary>
 		</Class>
 		<Constructor>
-			<summary>
-				Constructor
-			</summary>
+			<summary>	Constructor</summary>
 		</Constructor>
-		<Method name="Setup">
-			<summary>
-				Setups the window.
-			</summary>
-		</Method>
+		<Methods>
+			<StaticMethod name="CheckGLError">
+				<summary>
+					Check if OGL had any errors.
+				</summary>
+			</StaticMethod>
+			<Method name="Setup">
+				<summary>
+					Setups the window.
+				</summary>
+			</Method>
+			<Method name="Use-0">
+				<summary>
+					Imports plugins by selecting a type with all information in it.
+				</summary>
+				<param name="ignoreRequired">If true, the plugin requirements are ignored.</param>
+				<param name="informationType">The type where all information is saved.</param>
+				<param name="usage">The usage options</param>
+			</Method>
+			<Method name="Use-1">
+				<summary>
+					Imports plugins by selecting muitple types with all information in it.
+				</summary>
+				<param name="ignoreRequired">If true, the plugin requirements are ignored.</param>
+				<param name="types">The types you want to import.</param>
+				<param name="usage">The usage options</param>
+			</Method>
+			<Method name="Use-2">
+				<summary>
+					Imports plugins by selecting multiple types with all information in it.
+				</summary>
+				<param name="types">The types you want to import.</param>
+				<param name="usage">The usage options</param>
+			</Method>
+			<Method name="Use-3">
+				<summary>
+					Imports plugins by selecting multiple types with all information in it.
+				</summary>
+				<param name="ignoreRequired">If true, the plugin requirements are ignored.</param>
+				<param name="types">The types and permissions you want to import.</param>
+			</Method>
+		</Methods>
+		<Fields>
+			<Field name="_settings">
+				<summary>	Contains all settings for this window.</summary>
+			</Field>
+			<Field name="_glInformation">
+				<summary>	Contains all information for the OpenGL renderer.</summary>
+			</Field>
+		</Fields>
 	</GLWindow>
 	<WindowSettings>
 		<Class>
@@ -36,42 +77,6 @@
 			<Constructor name="1">
 				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="0"]/*'/>
 				<param name="title"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="Title"]/summary'/></param>
-			</Constructor>
-			
-			<Constructor name="2">
-				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="1"]/*'/>
-				<param name="graphicsMode"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="GraphicsMode"]/summary'/></param>
-			</Constructor>
-			
-			<Constructor name="3">
-				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="2"]/*'/>
-				<param name="options"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="Options"]/summary'/></param>
-			</Constructor>
-			
-			<Constructor name="4">
-				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="3"]/*'/>
-				<param name="device"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="Device"]/summary'/></param>
-			</Constructor>
-			
-			<Constructor name="5">
-				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="4"]/*'/>
-				<param name="majorVersion"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="MajorVersion"]/summary'/></param>
-				<param name="minorVersion"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="MinorVersion"]/summary'/></param>
-			</Constructor>
-			
-			<Constructor name="6">
-				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="5"]/*'/>
-				<param name="flags"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="Flags"]/summary'/></param>
-			</Constructor>
-			
-			<Constructor name="7">
-				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="6"]/*'/>
-				<param name="sharedContext"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="SharedContext"]/summary'/></param>
-			</Constructor>
-			
-			<Constructor name="8">
-				<include file="window.docu" path='Documentation/WindowSettings/Constructors/Constructor[@name="7"]/*'/>
-				<param name="singleThread"><include file="window.docu" path='Documentation/WindowSettings/Fields/Field[@name="SingleThread"]/summary'/></param>
 			</Constructor>
 		</Constructors>
 		
@@ -109,6 +114,24 @@
 			<Field name="SingleThread">
 				<summary>	Should the update and render frames be fired on the same thread? If false, render and update events will be fired from separate threads.</summary>
 			</Field>
+			<Field name="WindowState">
+				<summary>	WindowState contains the information if f.E. the window should be fullscreen.</summary>
+			</Field>
+			<Field name="VSync">
+				<summary>	The option if you want to use VSync.</summary>
+			</Field>
 		</Fields>
 	</WindowSettings>
+	<GLInformation>
+		<Class>
+			<summary>	Contains all information for the OpenGL renderer to use.</summary>
+		</Class>
+		
+		<Fields>
+			<Field name="Renderers">
+				<summary>	List of renderer that need to load.</summary>
+				<para>Please note, that all types in here, need the base from GenericRenderer.</para>
+			</Field>
+		</Fields>
+	</GLInformation>
 </Documentation>
