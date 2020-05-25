@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExampleRenderer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -63,6 +62,10 @@
     <ProjectReference Include="..\SMRenderer.Core\SMRenderer.Core.csproj">
       <Project>{1d351cc8-d673-49e9-a016-7aa435531743}</Project>
       <Name>SMRenderer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SMRenderer.PostProcessing\SMRenderer.PostProcessing.csproj">
+      <Project>{a827bca6-7175-4947-b23d-75bcef50795d}</Project>
+      <Name>SMRenderer.PostProcessing</Name>
     </ProjectReference>
     <ProjectReference Include="..\SMRenderer2D\SMRenderer2D.csproj">
       <Project>{b82e9a6a-271a-4da0-98e3-3db3c3db4d70}</Project>

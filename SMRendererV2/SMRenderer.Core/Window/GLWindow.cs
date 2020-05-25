@@ -6,6 +6,7 @@ using SMRenderer.Core.Plugin;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using OpenTK.Input;
 using SMRenderer.Core.Renderer.Framebuffers;
 
@@ -15,10 +16,13 @@ namespace SMRenderer.Core.Window
     public class GLWindow : GameWindow
     {
         #region Fields
+        public static GLWindow window;
         /// <include file='window.docu' path='Documentation/GLWindow/Fields/Field[@name="_settings"]'/>
         public WindowSettings _settings;
         /// <include file='window.docu' path='Documentation/GLWindow/Fields/Field[@name="_glInformation"]'/>
         public GLInformation _glInformation;
+
+        public bool DisableAutoDrawing = false;
 
         #endregion
 
@@ -51,12 +55,16 @@ namespace SMRenderer.Core.Window
         #endregion
 
         #region Overrides
+
         /// <inheritdoc />
         protected override void OnLoad(EventArgs e)
         {
+            window = this;
+
             _glInformation.Renderers.ForEach(a => Activator.CreateInstance(a) );
 
             _load?.Invoke(e, this);
+
             base.OnLoad(e);
         }
 
@@ -66,7 +74,7 @@ namespace SMRenderer.Core.Window
             base.OnRenderFrame(e);
             _beforeRender?.Invoke(e, this);
 
-            Framebuffer.MainFramebuffer.Activate();
+            (DisableAutoDrawing ? Framebuffer.MainFramebuffer : Framebuffer.ScreenFramebuffer).Activate();
             _render?.Invoke(e, this);
 
             _afterRender?.Invoke(e, this);
@@ -90,6 +98,8 @@ namespace SMRenderer.Core.Window
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
+
+            InitilizeFramebuffers();
             _resize?.Invoke(e, this);
         }
 
@@ -111,19 +121,15 @@ namespace SMRenderer.Core.Window
 
         #region Instance Methods
         /// <include file='window.docu' path='Documentation/GLWindow/Methods/Method[@name="Use-0"]'/>
-        public GLWindow Use(Type informationType, WindowUsage usage, bool ignoreRequired = false)
+        public GLWindow Use(WindowPlugin plugin, WindowUsage usage, bool ignoreRequired = false)
         {
-            if (informationType.BaseType != typeof(WindowPlugin))
-                throw new WindowUseException("The type '" + informationType.Name + "' isn't based on WindowUsage.");
-
-            WindowPlugin plugin = (WindowPlugin)Activator.CreateInstance(informationType);
-
+            
             if (!ignoreRequired && !usage.HasFlag(plugin.NeededUsage))
                 throw new WindowUseException("The plugin require usage that doesn't match the granted usage.");
 
             foreach (WindowUsage u in Enum.GetValues(typeof(WindowUsage)))
             {
-                if (!usage.HasFlag(u)) continue;
+                if (!usage.HasFlag(u) && !ignoreRequired) continue;
 
                 switch (u)
                 {
@@ -154,6 +160,9 @@ namespace SMRenderer.Core.Window
                     case WindowUsage.AddRenderer:
                         if (plugin.Renderers != null) _glInformation.Renderers.AddRange(plugin.Renderers);
                         break;
+                    case WindowUsage.AddFramebuffers:
+                        if (plugin.Framebuffers != null) _glInformation.Framebuffers.AddRange(plugin.Framebuffers);
+                        break;
                 }
             }
 
@@ -163,24 +172,40 @@ namespace SMRenderer.Core.Window
             return this;
         }
         /// <include file='window.docu' path='Documentation/GLWindow/Methods/Method[@name="Use-1"]'/>
-        public GLWindow Use(WindowUsage usage, bool ignoreRequired, params Type[] types)
+        public GLWindow Use(WindowUsage usage, bool ignoreRequired, params WindowPlugin[] types)
         {
-            foreach (Type type in types) Use(type, usage, ignoreRequired);
+            foreach (WindowPlugin type in types) Use(type, usage, ignoreRequired);
             return this;
         }
         /// <include file='window.docu' path='Documentation/GLWindow/Methods/Method[@name="Use-2"]'/>
-        public GLWindow Use(WindowUsage usage, params Type[] types)
+        public GLWindow Use(WindowUsage usage, params WindowPlugin[] types)
         {
             return Use(usage, false, types);
         }
         /// <include file='window.docu' path='Documentation/GLWindow/Methods/Method[@name="Use-3"]'/>
-        public GLWindow Use(KeyValuePair<Type, WindowUsage>[] types, bool ignoreRequired = false)
+        public GLWindow Use(KeyValuePair<WindowPlugin, WindowUsage>[] types, bool ignoreRequired = false)
         {
-            foreach (KeyValuePair<Type, WindowUsage> type in types)
+            foreach (KeyValuePair<WindowPlugin, WindowUsage> type in types)
                 Use(type.Key, type.Value, ignoreRequired);
 
             return this;
         }
+        #endregion
+
+        #region Private Instance Methods
+
+        private void InitilizeFramebuffers()
+        {
+            _glInformation.Framebuffers.ForEach(a => a.Dispose());
+
+            // Sometimes, frame buffer initialization fails
+            // if the window gets resized too often.
+            // I found no better way around this:
+            Thread.Sleep(50);
+
+            _glInformation.Framebuffers.ForEach(a => a.Initilize());
+        }
+
         #endregion
     }
 }

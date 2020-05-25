@@ -20,5 +20,18 @@ namespace SMRenderer.Core
         {
             return new StreamReader(ass.GetManifestResourceStream(ass.GetName().Name + "."+path) ?? throw new InvalidOperationException("Assembly couldn't find resource at path '"+path+"'.")).ReadToEnd();
         }
+
+        public static bool CheckGLErrors()
+        {
+            bool hasError = false;
+            ErrorCode c;
+            while ((c = GL.GetError()) != ErrorCode.NoError)
+            {
+                hasError = true;
+                Log.Write("GLError",c.ToString());
+            }
+
+            return hasError;
+        }
     }
 }

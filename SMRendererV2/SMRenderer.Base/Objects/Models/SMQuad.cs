@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using SMRenderer.Core.Object;
 
-namespace SMRenderer2D.Visual.Models
+namespace SMRenderer2D.Objects.Models
 {
     public class SMQuad : SMModelBase
     {

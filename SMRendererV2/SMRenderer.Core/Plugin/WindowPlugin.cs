@@ -1,6 +1,7 @@
 ﻿using System;
 using OpenTK;
 using SMRenderer.Core.Enums;
+using SMRenderer.Core.Renderer.Framebuffers;
 using SMRenderer.Core.Window;
 
 namespace SMRenderer.Core.Plugin
@@ -12,7 +13,9 @@ namespace SMRenderer.Core.Plugin
         public abstract WindowUsage NeededUsage { get; }
 
         /// <include file='plugin.docu' path='Documentation/WindowPlugin/Fields/Field[@name="Renderers"]'/>
-        public Type[] Renderers;
+        public virtual Type[] Renderers { get; }
+
+        public virtual Framebuffer[] Framebuffers { get; }
 
         /// <include file='plugin.docu' path='Documentation/WindowPlugin/Methods/VirtualMethod[@name="Load"]'/>
         public virtual void Load(GLWindow window) { }

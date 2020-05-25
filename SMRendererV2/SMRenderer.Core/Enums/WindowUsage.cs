@@ -22,7 +22,8 @@ namespace SMRenderer.Core.Enums
         Resize = 32,
         /// <include file='enums.docu' path='Documentation/WindowUsage/Enum[@name="AddRenderer"]'/>
         AddRenderer = 64,
+        AddFramebuffers = 128,
         /// <include file='enums.docu' path='Documentation/WindowUsage/Enum[@name="All"]'/>
-        All = Load | Render | Update | Exit | MouseMove | Resize | AddRenderer,
+        All = Load | Render | Update | Exit | MouseMove | Resize | AddRenderer | AddFramebuffers,
     }
 }

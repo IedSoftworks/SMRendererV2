@@ -10,13 +10,13 @@ namespace SMRenderer.Base.Types
         public override float Z { get; set; }
         public override float W { get; set; }
 
-        public Animation Animate(TimeSpan time, AnimationVector start, AnimationVector end, bool repeat)
+        public Animation Animate(TimeSpan time, AnimationVector start, AnimationVector end, bool repeat = false)
         {
             Animation ani = new Animation(this, time, start, end, repeat);
             ani.Start();
             return ani;
         }
-        public Animation Animate(TimeSpan time, AnimationVector direction, bool repeat)
+        public Animation Animate(TimeSpan time, AnimationVector direction, bool repeat = false)
         {
             Animation ani = new Animation(this, time, direction, repeat);
             ani.Start();

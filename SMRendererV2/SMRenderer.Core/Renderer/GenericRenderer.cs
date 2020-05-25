@@ -20,14 +20,16 @@ namespace SMRenderer.Core.Renderer
         /// <include file='renderer.docu' path='Documentation/GenericRenderer/Fields/Field[@name="FragmentFiles"]'/>
         public abstract ShaderFileCollection FragmentFiles { get; }
 
+        public virtual Dictionary<string, int> CustomFragData { get; }
+
 
         /// <include file='renderer.docu' path='Documentation/GenericRenderer/Fields/Field[@name="AttribIDs"]'/>
         public static Dictionary<string, int> AttribIDs = new Dictionary<string, int>();
         /// <include file='renderer.docu' path='Documentation/GenericRenderer/Fields/Field[@name="FragDataIDs"]'/>
         public static Dictionary<string, int> FragDataIDs = new Dictionary<string, int>();
 
-        public Dictionary<string, int> Uniforms { get; private set; } = new Dictionary<string, int>();
-        public Dictionary<string, int> U => Uniforms;
+        public Dictionary<string, Uniform> Uniforms { get; private set; } = new Dictionary<string, Uniform>();
+        public Dictionary<string, Uniform> U => Uniforms;
 
         /// <include file='renderer.docu' path='Documentation/GenericRenderer/Constructor'/>
         public GenericRenderer()
@@ -44,57 +46,67 @@ namespace SMRenderer.Core.Renderer
             VertexFiles.Load(mProgramId);
             FragmentFiles.Load(mProgramId);
 
-            if (VertexFiles.All(a => a.ID != -1) && FragmentFiles.All(a => a.ID != -1))
-            {
-                foreach (string inValue in VertexFiles.InDictionary)
-                {
-                    if (!AttribIDs.ContainsKey(inValue))
-                        throw new ShaderLoadingException("[General] There is no id found for attribute '"+inValue+"'. Do use the attribute add it to GenericRenderer.AttribIDs.");
+            if (VertexFiles.Any(a => a.ID == -1) && FragmentFiles.Any(a => a.ID == -1))
+                throw new ShaderLoadingException("[General] Not all of your shaders has been loaded correctly.\n\nRenderer: "+GetType().Name);
 
-                    int id = AttribIDs[inValue];
-                    GL.BindAttribLocation(mProgramId, id, inValue);
-                }
-                foreach (string outValue in FragmentFiles.OutDictionary)
+            foreach (string inValue in VertexFiles.InDictionary)
+            {
+                if (!AttribIDs.ContainsKey(inValue))
+                    throw new ShaderLoadingException("[General] There is no id found for attribute '" + inValue + "'. Do use the attribute add it to GenericRenderer.AttribIDs.");
+
+                int id = AttribIDs[inValue];
+                GL.BindAttribLocation(mProgramId, id, inValue);
+            }
+            foreach (string outValue in FragmentFiles.OutDictionary)
+            {
+                if (CustomFragData != null)
+                    if (CustomFragData?.ContainsKey(outValue) == true) GL.BindFragDataLocation(mProgramId, CustomFragData[outValue], outValue);
+                
+                else
                 {
                     ColorAttachment id = Framebuffer.ActiveFramebuffer.ColorAttachments.FirstOrDefault(a =>
                         a.FragOutputVariable == outValue);
                     if (id != null)
-                    {
                         GL.BindFragDataLocation(mProgramId, id, outValue);
-                    } else
-                    {
-                        Log.Write(LogWriteType.Warning, "Fragment out variable '"+outValue+"' doesn't exist in current framebuffer '"+Framebuffer.ActiveFramebuffer.GetType().Name+"'. Currently ignored.");
-                    }
+                    else
+                        Log.Write(LogWriteType.Warning,
+                            "Fragment out variable '" + outValue +
+                            "' doesn't exist in current framebuffer. Currently ignored.");
                 }
-
-                GL.LinkProgram(mProgramId);
-            } else
-            {
-                throw new ShaderLoadingException("[General] Not all of your shaders has been loaded correctly.\n\nRenderer: "+GetType().Name);
             }
 
-            foreach (string key in VertexFiles.UniformDictionary)
-            {
-                if (Uniforms.ContainsKey(key))
-                    throw new ShaderLoadingException("[Uniforms] There are multiple uniforms with the name '"+key+"'.");
+            GL.LinkProgram(mProgramId);
 
-                Uniforms.Add(key, GL.GetUniformLocation(mProgramId, key));
-            }
-            foreach (string key in FragmentFiles.UniformDictionary)
+            VertexFiles.ForEach(a =>
             {
-                if (Uniforms.ContainsKey(key))
-                    throw new ShaderLoadingException("[Uniforms] There are multiple uniforms with the name '"+key+ "'.\n\nRenderer: " + GetType().Name);
+                GL.DetachShader(mProgramId, a.ID);
+                if (a.Individual) GL.DeleteShader(a.ID);
+            });
+            FragmentFiles.ForEach(a =>
+            {
+                GL.DetachShader(mProgramId, a.ID);
+                if (a.Individual) GL.DeleteShader(a.ID);
+            });
 
-                Uniforms.Add(key, GL.GetUniformLocation(mProgramId, key));
+            GL.GetProgram(mProgramId, GetProgramParameterName.ActiveUniforms, out var uniformAmount);
+
+            for (int i = 0; i < uniformAmount; i++)
+            {
+                var key = GL.GetActiveUniform(mProgramId, i, out _, out _);
+                var location = GL.GetUniformLocation(mProgramId, key);
+
+                Uniforms.Add(key, new Uniform(location));
             }
+
+            Utility.CheckGLErrors();
         }
-
-        public abstract void Draw(Matrix4 MVP, Model model, Material material);
 
         public void CleanUp()
         {
             GL.BindVertexArray(0);
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
+
+        public static implicit operator int(GenericRenderer renderer) => renderer.mProgramId;
     }
 }

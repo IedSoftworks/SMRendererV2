@@ -18,6 +18,7 @@ namespace SMRenderer.Core.Renderer.Framebuffers
         public static implicit operator FramebufferAttachment(ColorAttachment ca) => (FramebufferAttachment) ca.AttachmentID + 36064;
         public static implicit operator DrawBuffersEnum(ColorAttachment ca) => (DrawBuffersEnum) ca.AttachmentID + 36064;
         public static implicit operator DrawBufferMode(ColorAttachment ca) => (DrawBufferMode) ca.AttachmentID + 36064;
+        public static implicit operator ReadBufferMode(ColorAttachment ca) => (ReadBufferMode) ca.AttachmentID + 36064;
 
         public static implicit operator int(ColorAttachment ca) => ca.AttachmentID;
     }

@@ -20,15 +20,6 @@ namespace SMRenderer.Base
             base.Remove(item);
         }
 
-        public void AddRange(params IShowObject[] items)
-        {
-            foreach(IShowObject item in items) Add(item);
-        }
-        public void RemoveRange(params IShowObject[] items)
-        {
-            foreach (IShowObject item in items) Remove(item);
-        }
-
         public void Prepare() => ForEach(a => a.Prepare());
 
         public void Draw() => ForEach(a => a.Draw());

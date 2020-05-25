@@ -15,19 +15,20 @@ namespace SMRenderer.Core.Renderer
         /// <include file='renderer.docu' path='Documentation/ShaderFile/Fields/Field[@name="ID"]'/>
         public int ID { get; private set; } = -1;
 
+        public bool Individual;
+
 
         /// <include file='renderer.docu' path='Documentation/ShaderFile/Fields/Field[@name="InDictionary"]'/>
         [NonSerialized] public List<string> InDictionary = new List<string>();
         /// <include file='renderer.docu' path='Documentation/ShaderFile/Fields/Field[@name="OutDictionary"]'/>
         [NonSerialized] public List<string> OutDictionary = new List<string>();
-        /// <include file='renderer.docu' path='Documentation/ShaderFile/Fields/Field[@name="UniformDictionary"]'/>
-        [NonSerialized] public List<string> UniformDictionary = new List<string>();
 
         /// <include file='renderer.docu' path='Documentation/ShaderFile/Constructor'/>
-        public ShaderFile(ShaderType type, string source)
+        public ShaderFile(ShaderType type, string source, bool individual = true)
         {
             Type = type;
             Source = source;
+            Individual = individual;
         }
 
         /// <include file='renderer.docu' path='Documentation/ShaderFile/Methods/Method[@name="Load"]'/>
@@ -55,10 +56,6 @@ namespace SMRenderer.Core.Renderer
 
                     case "out":
                         OutDictionary.Add(splits[2]);
-                        break;
-
-                    case "uniform":
-                        UniformDictionary.Add(splits[2].Trim());
                         break;
                 }
             }

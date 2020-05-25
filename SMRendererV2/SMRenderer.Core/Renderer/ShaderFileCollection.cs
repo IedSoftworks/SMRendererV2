@@ -11,8 +11,6 @@ namespace SMRenderer.Core.Renderer
         public List<string> InDictionary { get; private set; } = new List<string>();
         /// <include file='renderer.docu' path='Documentation/ShaderFileCollection/Fields/Field[@name="OutDictionary"]'/>
         public List<string> OutDictionary { get; private set; } = new List<string>();
-        /// <include file='renderer.docu' path='Documentation/ShaderFileCollection/Fields/Field[@name="UniformDictionary"]'/>
-        public List<string> UniformDictionary { get; private set; } = new List<string>();
 
         public ShaderType Type;
 
@@ -21,9 +19,9 @@ namespace SMRenderer.Core.Renderer
             Type = type;
         }
 
-        public void Add(string source)
+        public void Add(string source, bool individual = true)
         {
-            base.Add(new ShaderFile(Type, source));
+            base.Add(new ShaderFile(Type, source, individual));
         }
 
         /// <include file='renderer.docu' path='Documentation/ShaderFileCollection/Methods/Method[@name="Load"]'/>
@@ -35,7 +33,6 @@ namespace SMRenderer.Core.Renderer
 
                 InDictionary = InDictionary.Concat(file.InDictionary).ToList();
                 OutDictionary = OutDictionary.Concat(file.OutDictionary).ToList();
-                UniformDictionary = UniformDictionary.Concat(file.UniformDictionary).ToList();
             }
         }
     }

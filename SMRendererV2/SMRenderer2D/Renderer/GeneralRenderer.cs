@@ -1,23 +1,32 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using OpenTK;
-using SMRenderer.Core.Renderer;
-using SMRenderer.Core;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
+using SMRenderer.Core;
 using SMRenderer.Core.Object;
+using SMRenderer.Core.Renderer;
+using Material = SMRenderer2D.Objects.Material;
 
-namespace SMRenderer2D.Visual.Renderer
+namespace SMRenderer2D.Renderer
 {
     public class GeneralRenderer : GenericRenderer
     {
         public static GeneralRenderer program;
         public override ShaderFileCollection VertexFiles { get; } = new ShaderFileCollection(ShaderType.VertexShader)
         {
-            Utility.ReadAssemblyFile(Assembly.GetExecutingAssembly(), "Visual.ShaderFiles.general.main.vert")
+            Utility.ReadAssemblyFile(Assembly.GetExecutingAssembly(), "ShaderFiles.general.main.vert")
         };
 
         public override ShaderFileCollection FragmentFiles { get; } = new ShaderFileCollection(ShaderType.FragmentShader)
         {
-            Utility.ReadAssemblyFile(Assembly.GetExecutingAssembly(), "Visual.ShaderFiles.general.main.frag")
+            Utility.ReadAssemblyFile(Assembly.GetExecutingAssembly(), "ShaderFiles.general.main.frag")
+        };
+
+        public override Dictionary<string, int> CustomFragData { get; } = new Dictionary<string, int>
+        {
+            {"color", 0 },
+            {"bloom", 1 }
         };
 
         public GeneralRenderer() : base()
@@ -25,14 +34,14 @@ namespace SMRenderer2D.Visual.Renderer
             program = this;
         }
 
-        public override void Draw(Matrix4 MVP, Model model, Material material)
+        public void Draw(Matrix4 MVP, Model model, Material material)
         {
            GL.UseProgram(mProgramId);
 
-           GL.UniformMatrix4(U["MVP"], false, ref MVP);
+           U["MVP"].SetMatrix4(ref MVP);
            
            material.Texture.ApplyTo(U["Texture"], 0);
-           GL.Uniform4(U["ObjectColor"], material.BaseColor);
+           U["material.ObjectColor"].SetUniform4((Color4)material.BaseColor);
 
            GL.BindVertexArray(model.VAO);
            GL.DrawArrays(model.PrimitiveType, 0, model.VertexCount);

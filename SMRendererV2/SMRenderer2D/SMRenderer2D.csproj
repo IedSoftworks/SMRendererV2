@@ -39,11 +39,12 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Objects\Material.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Visual\Draw\DrawObject.cs" />
-    <Compile Include="Visual\Models\SMModelBase.cs" />
-    <Compile Include="Visual\Models\SMQuad.cs" />
-    <Compile Include="Visual\Renderer\GeneralRenderer.cs" />
+    <Compile Include="Draw\DrawObject.cs" />
+    <Compile Include="Objects\SMModelBase.cs" />
+    <Compile Include="Objects\Models\SMQuad.cs" />
+    <Compile Include="Renderer\GeneralRenderer.cs" />
     <Compile Include="Window2D.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -60,8 +61,8 @@
   <ItemGroup>
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="Visual\ShaderFiles\general\main.frag" />
-    <EmbeddedResource Include="Visual\ShaderFiles\general\main.vert" />
+    <EmbeddedResource Include="ShaderFiles\general\main.frag" />
+    <EmbeddedResource Include="ShaderFiles\general\main.vert" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

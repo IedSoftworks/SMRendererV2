@@ -4,32 +4,26 @@ namespace SMRenderer.Base.Types.VectorTypes
 {
     public class Size : AnimatableType
     {
-        public int Width;
-        public int Height;
-        public float Depth;
-
-        #region SetAnimateValues
-        public override float X
+        public int Width
         {
-            get => Width;
-            set => Width = (int)value;
+            get => (int)X;
+            set => X = value;
         }
-        public override float Y
+        public int Height
         {
-            get => Height;
-            set => Height = (int)value;
+            get => (int)Y;
+            set => Y = value;
         }
-        public override float Z
+        public float Depth
         {
-            get => Depth;
-            set => Depth = (int)value;
+            get => (int)Z;
+            set => Z = value;
         }
         public override float W
         {
             get => 0;
             set { return; }
         }
-        #endregion
 
         public Size(int uniform)
         {
