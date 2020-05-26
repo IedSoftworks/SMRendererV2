@@ -2,7 +2,7 @@
 using SMRenderer.Base.Types.VectorTypes;
 using SMRenderer.Core.Object;
 
-namespace SMRenderer2D.Objects
+namespace SMRenderer.Base.Objects
 {
     public class Material
     {

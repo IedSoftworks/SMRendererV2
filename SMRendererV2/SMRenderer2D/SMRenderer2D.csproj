@@ -39,11 +39,9 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Objects\Material.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Draw\DrawObject.cs" />
-    <Compile Include="Objects\SMModelBase.cs" />
-    <Compile Include="Objects\Models\SMQuad.cs" />
+    <Compile Include="Objects\SMQuad.cs" />
     <Compile Include="Renderer\GeneralRenderer.cs" />
     <Compile Include="ShaderFiles\ShaderCatalog.cs" />
     <Compile Include="Window2D.cs" />

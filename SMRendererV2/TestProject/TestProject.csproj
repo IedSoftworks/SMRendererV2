@@ -71,6 +71,10 @@
       <Project>{b82e9a6a-271a-4da0-98e3-3db3c3db4d70}</Project>
       <Name>SMRenderer2D</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SMRenderer3D\SMRenderer3D.csproj">
+      <Project>{b4d25a31-bacf-4e9c-b500-e2da5d744f48}</Project>
+      <Name>SMRenderer3D</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

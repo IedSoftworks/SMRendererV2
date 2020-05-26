@@ -58,6 +58,10 @@
       <Project>{1d351cc8-d673-49e9-a016-7aa435531743}</Project>
       <Name>SMRenderer.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SMRenderer2D\SMRenderer2D.csproj">
+      <Project>{B82E9A6A-271A-4DA0-98E3-3DB3C3DB4D70}</Project>
+      <Name>SMRenderer2D</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Bloom\ShaderFiles\main.frag" />

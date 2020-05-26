@@ -1,18 +1,20 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using SMRenderer.Base.Objects;
 using SMRenderer.Core.Object;
 
-namespace SMRenderer2D.Objects.Models
+namespace SMRenderer3D.Objects
 {
-    public class SMQuad : SMModelBase
+    public class SMPlate : SMModelBase
     {
-        public static SMQuad Object = new SMQuad();
+        public static SMPlate Object = new SMPlate();
 
         public override ModelData Vertices { get; } = new ModelData()
         {
-            -.5f, -.5f, 0,
-            -.5f, +.5f, 0,
-            +.5f, +.5f, 0,
-            +.5f, -.5f, 0
+            -.5f, 0, -.5f, 
+            -.5f, 0, +.5f, 
+            +.5f, 0, +.5f, 
+            +.5f, 0, -.5f,
+
         };
 
         public override ModelData UVs { get; } = new ModelData(pointerSize: 2)
@@ -25,15 +27,15 @@ namespace SMRenderer2D.Objects.Models
 
         public override ModelData Normals { get; } = new ModelData()
         {
-            0,0,1,
-            0,0,1,
-            0,0,1,
-            0,0,1
+            0,1,0,
+            0,1,0,
+            0,1,0,
+            0,1,0
         };
 
         public override PrimitiveType PrimitiveType { get; } = PrimitiveType.Quads;
 
-        private SMQuad()
+        private SMPlate()
         {
             Compile();
         }

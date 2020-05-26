@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL4;
 using SMRenderer.Core;
 using SMRenderer.Core.Object;
 using SMRenderer.Core.Renderer;
-using SMRenderer2D.Objects.Models;
+using SMRenderer2D.Objects;
 
 namespace SMRenderer.PostProcessing.Bloom
 {

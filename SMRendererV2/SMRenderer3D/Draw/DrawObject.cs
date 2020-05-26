@@ -3,11 +3,11 @@ using SMRenderer.Base;
 using SMRenderer.Base.Interfaces;
 using SMRenderer.Base.Types.VectorTypes;
 using SMRenderer.Core.Object;
-using SMRenderer2D.Objects;
-using SMRenderer2D.Renderer;
+using SMRenderer3D.Objects;
+using SMRenderer3D.Renderer;
 using Material = SMRenderer.Base.Objects.Material;
 
-namespace SMRenderer2D.Draw
+namespace SMRenderer3D.Draw
 {
     public class DrawObject : IShowObject
     {

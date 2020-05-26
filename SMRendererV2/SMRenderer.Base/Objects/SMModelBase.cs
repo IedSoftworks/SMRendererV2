@@ -2,7 +2,7 @@
 using OpenTK.Graphics.OpenGL4;
 using SMRenderer.Core.Object;
 
-namespace SMRenderer2D.Objects
+namespace SMRenderer.Base.Objects
 {
     public class SMModelBase : Model
     {

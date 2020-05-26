@@ -24,6 +24,8 @@ namespace SMRenderer.Core.Window
 
         public bool DisableAutoDrawing = false;
 
+        public Dictionary<Type, WindowPlugin> LoadedPlugins = new Dictionary<Type, WindowPlugin>();
+
         #endregion
 
         #region Events
@@ -99,6 +101,8 @@ namespace SMRenderer.Core.Window
         {
             base.OnResize(e);
 
+            GL.Viewport(0,0,Width, Height);
+
             InitilizeFramebuffers();
             _resize?.Invoke(e, this);
         }
@@ -123,7 +127,9 @@ namespace SMRenderer.Core.Window
         /// <include file='window.docu' path='Documentation/GLWindow/Methods/Method[@name="Use-0"]'/>
         public GLWindow Use(WindowPlugin plugin, WindowUsage usage, bool ignoreRequired = false)
         {
-            
+            if (LoadedPlugins.ContainsKey(plugin.GetType()))
+                throw new WindowUseException($"The plugin '{plugin.GetType().Name}' is already loaded.");
+
             if (!ignoreRequired && !usage.HasFlag(plugin.NeededUsage))
                 throw new WindowUseException("The plugin require usage that doesn't match the granted usage.");
 
@@ -168,6 +174,8 @@ namespace SMRenderer.Core.Window
 
             if (ignoreRequired || usage.HasFlag(WindowUsage.Load))
                 plugin.Load(this);
+
+            LoadedPlugins.Add(plugin.GetType(), plugin);
 
             return this;
         }

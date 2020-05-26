@@ -44,7 +44,6 @@
     <Compile Include="Keybinds\Keybind.cs" />
     <Compile Include="Keybinds\KeybindCollection.cs" />
     <Compile Include="Objects\Material.cs" />
-    <Compile Include="Objects\Models\SMQuad.cs" />
     <Compile Include="Objects\SMModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene.cs" />
