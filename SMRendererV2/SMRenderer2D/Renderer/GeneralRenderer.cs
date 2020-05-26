@@ -40,8 +40,11 @@ namespace SMRenderer2D.Renderer
            GL.UseProgram(mProgramId);
 
            U["MVP"].SetMatrix4(ref MVP);
-           
-           material.Texture.ApplyTo(U["Texture"], 0);
+
+           bool useTex = material.Texture != null;
+           if (useTex)
+               material.Texture.ApplyTo(U["Texture"], 0);
+           U["material.UseTexture"].SetUniform1(useTex);
            U["material.ObjectColor"].SetUniform4((Color4)material.BaseColor);
 
            GL.BindVertexArray(model.VAO);

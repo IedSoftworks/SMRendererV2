@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A827BCA6-7175-4947-B23D-75BCEF50795D}</ProjectGuid>
+    <ProjectGuid>{B4D25A31-BACF-4E9C-B500-E2DA5D744F48}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SMRenderer.PostProcessing</RootNamespace>
-    <AssemblyName>SMRenderer.PostProcessing</AssemblyName>
+    <RootNamespace>SMRenderer3D</RootNamespace>
+    <AssemblyName>SMRenderer3D</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -31,9 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=3.2.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenTK.3.2\lib\net20\OpenTK.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,27 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bloom\BloomFeature.cs" />
-    <Compile Include="Bloom\BloomRenderer.cs" />
-    <Compile Include="Bloom\BloomSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SMRenderer.Base\SMRenderer.Base.csproj">
-      <Project>{53081c3e-ccae-45d4-bee9-1d8f3bd1bbc4}</Project>
-      <Name>SMRenderer.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SMRenderer.Core\SMRenderer.Core.csproj">
-      <Project>{1d351cc8-d673-49e9-a016-7aa435531743}</Project>
-      <Name>SMRenderer.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Bloom\ShaderFiles\main.frag" />
-    <EmbeddedResource Include="Bloom\ShaderFiles\main.vert" />
-    <None Include="OpenTK.dll.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
@@ -43,22 +44,28 @@ namespace SMRenderer.Core.Renderer.Framebuffers
 
             FramebufferID = GL.GenFramebuffer();
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferID);
-
+            DrawBuffersEnum[] enums = new DrawBuffersEnum[ColorAttachments.Count];
+            int c = 0;
             foreach (var attach in ColorAttachments)
             {
                 attach.TexID = GL.GenTexture();
 
                 GL.BindTexture(TextureTarget.Texture2D, attach.TexID);
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, Window.Width, Window.Height,
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, 
+                    (int)(Window.Width * attach.Scale), (int)(Window.Height * attach.Scale),
                     0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
-
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Nearest);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Linear);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureParameterName.ClampToEdge);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureParameterName.ClampToEdge);
 
-                GL.DrawBuffer(attach);
-                GL.FramebufferTexture(FramebufferTarget.Framebuffer, attach, attach.TexID, 0);
+                enums[c++] = attach.DrawBuffersEnum;
+            }
+
+            GL.DrawBuffers(enums.Length, enums);
+            foreach (var attach in ColorAttachments)
+            {
+                GL.FramebufferTexture(FramebufferTarget.Framebuffer, attach.FramebufferAttachment, attach.TexID, 0);
             }
 
             FramebufferErrorCode err = GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer);
@@ -71,8 +78,7 @@ namespace SMRenderer.Core.Renderer.Framebuffers
 
         public virtual void Activate(bool GLBinding = true)
         {
-            if (GLBinding) 
-                GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferID);
+            if (GLBinding) GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferID);
             ActiveFramebuffer = this;
         }
 
@@ -80,6 +86,7 @@ namespace SMRenderer.Core.Renderer.Framebuffers
         {
             ColorAttachments.Add(variableNames);
         }
+
 
         public virtual void Dispose()
         {

@@ -2,6 +2,7 @@
 
 struct Material {
 	vec4 ObjectColor;
+	int UseTexture;
 };
 
 in vec2 vTexture;
@@ -15,9 +16,10 @@ uniform sampler2D Texture;
 float colThreshold = 0.1;
 
 void main() {
-	vec4 tex = texture(Texture, vTexture);
+	color = material.ObjectColor;
+	if(material.UseTexture == 1)
+		color *= texture(Texture, vTexture);
 
-	color = tex * material.ObjectColor;
 
-	bloom = vec4(1,1,1,1);
+	bloom = color;
 }

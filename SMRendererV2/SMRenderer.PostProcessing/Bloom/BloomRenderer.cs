@@ -45,6 +45,12 @@ namespace SMRenderer.PostProcessing.Bloom
             U["Merge"].SetUniform1(merge);
 
             U["Horizontal"].SetUniform1(hoz);
+            
+            U["weight"].SetUniform1(BloomSettings.Weights.Length, BloomSettings.Weights);
+            U["weightCount"].SetUniform1(BloomSettings.Weights.Length);
+            U["tex_offset"].SetUniform2(BloomSettings.TextureOffset);
+            U["bloomSizeFactor"].SetUniform1(BloomSettings.SizeFactor);
+            U["multiplier"].SetUniform1(BloomSettings.Multiplier);
 
             Model obj = SMQuad.Object;
 

@@ -48,10 +48,6 @@ namespace SMRenderer2D
 
         public override void Loading(EventArgs e, GLWindow window)
         {
-            Bitmap empty = new Bitmap(1,1);
-            empty.SetPixel(0,0, Color.White);
-            Material.DefaultTexture = new Texture(empty, TextureMinFilter.Nearest, TextureWrapMode.ClampToBorder, true);
-
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             GL.Disable(EnableCap.DepthTest);
