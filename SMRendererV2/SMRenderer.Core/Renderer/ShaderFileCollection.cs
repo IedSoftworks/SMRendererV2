@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OpenTK.Graphics.OpenGL4;
+using SMRenderer.Core.Exceptions;
 
 namespace SMRenderer.Core.Renderer
 {
@@ -23,7 +24,12 @@ namespace SMRenderer.Core.Renderer
         {
             base.Add(new ShaderFile(Type, source, individual));
         }
-
+        public void Add(ShaderFileCollection fileCollection)
+        {
+            if (fileCollection.Type != Type)
+                throw new ShaderLoadingException($"The file collection-type, that you tried to add, doesn't match the shader type. \n\nInstance type: {Type}\nCollectionType: {fileCollection.Type}");
+            foreach (ShaderFile shaderFile in fileCollection) Add(shaderFile);
+        }
         /// <include file='renderer.docu' path='Documentation/ShaderFileCollection/Methods/Method[@name="Load"]'/>
         public void Load(int programId)
         {

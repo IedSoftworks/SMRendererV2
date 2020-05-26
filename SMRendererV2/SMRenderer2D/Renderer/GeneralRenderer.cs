@@ -6,6 +6,7 @@ using OpenTK.Graphics.OpenGL4;
 using SMRenderer.Core;
 using SMRenderer.Core.Object;
 using SMRenderer.Core.Renderer;
+using SMRenderer2D.ShaderFiles;
 using Material = SMRenderer2D.Objects.Material;
 
 namespace SMRenderer2D.Renderer
@@ -29,7 +30,7 @@ namespace SMRenderer2D.Renderer
             {"bloom", 1 }
         };
 
-        public GeneralRenderer() : base()
+        public GeneralRenderer()
         {
             program = this;
         }

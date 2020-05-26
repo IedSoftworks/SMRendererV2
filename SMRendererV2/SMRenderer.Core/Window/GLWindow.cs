@@ -74,7 +74,8 @@ namespace SMRenderer.Core.Window
             base.OnRenderFrame(e);
             _beforeRender?.Invoke(e, this);
 
-            (DisableAutoDrawing ? Framebuffer.MainFramebuffer : Framebuffer.ScreenFramebuffer).Activate();
+            //(DisableAutoDrawing ? Framebuffer.MainFramebuffer : Framebuffer.ScreenFramebuffer).Activate();
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, Framebuffer.MainFramebuffer.FramebufferID);
             _render?.Invoke(e, this);
 
             _afterRender?.Invoke(e, this);

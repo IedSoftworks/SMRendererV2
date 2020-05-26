@@ -37,7 +37,7 @@ namespace SMRenderer.PostProcessing.Bloom
         {
             Framebuffer.MainFramebuffer.AddAttachment("bloom");
             
-            window.DisableAutoDrawing = !true;
+            window.DisableAutoDrawing = true;
         }
 
 
@@ -46,7 +46,16 @@ namespace SMRenderer.PostProcessing.Bloom
             ColorAttachment mainColors = Framebuffer.MainFramebuffer.ColorAttachments["color"];
             ColorAttachment bloomColors = Framebuffer.MainFramebuffer.ColorAttachments["bloom"];
 
-            
+
+            GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, Framebuffer.MainFramebuffer);
+            GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, Framebuffer.ScreenFramebuffer);
+
+            GL.ReadBuffer(ReadBufferMode.ColorAttachment0);
+            GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
+            GL.BlitFramebuffer(0, 0, window.Width, window.Height, 0, 0, window.Width, window.Height, ClearBufferMask.ColorBufferBit,
+                BlitFramebufferFilter.Linear);
+            return;
+
             GL.UseProgram(BloomRenderer.renderer);
 
             int loopCount = LoopCount * 2;
@@ -71,14 +80,6 @@ namespace SMRenderer.PostProcessing.Bloom
             }
 
             GL.UseProgram(0);
-            return;
-            GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, Framebuffer.MainFramebuffer);
-            GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, Framebuffer.ScreenFramebuffer);
-
-            GL.ReadBuffer(bloomColors);
-            GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
-            GL.BlitFramebuffer(0, 0, window.Width, window.Height, 0, 0, window.Width, window.Height, ClearBufferMask.ColorBufferBit,
-                BlitFramebufferFilter.Linear);
 
         }
 

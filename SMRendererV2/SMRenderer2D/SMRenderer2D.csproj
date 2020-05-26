@@ -45,6 +45,7 @@
     <Compile Include="Objects\SMModelBase.cs" />
     <Compile Include="Objects\Models\SMQuad.cs" />
     <Compile Include="Renderer\GeneralRenderer.cs" />
+    <Compile Include="ShaderFiles\ShaderCatalog.cs" />
     <Compile Include="Window2D.cs" />
   </ItemGroup>
   <ItemGroup>

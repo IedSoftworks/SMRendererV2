@@ -18,9 +18,6 @@ float multiplier = 2;
 
 void main() {
 
-	color = vec4(1,1,1,.1);
-	return;
-
 	vec3 result = texture(BloomTex, vTexture).rgb;
 
 	if (Horizontal == 1) {

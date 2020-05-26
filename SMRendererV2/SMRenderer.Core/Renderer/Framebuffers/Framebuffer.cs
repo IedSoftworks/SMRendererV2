@@ -71,7 +71,8 @@ namespace SMRenderer.Core.Renderer.Framebuffers
 
         public virtual void Activate(bool GLBinding = true)
         {
-            if (GLBinding) GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferID);
+            if (GLBinding) 
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferID);
             ActiveFramebuffer = this;
         }
 

@@ -18,7 +18,7 @@ namespace TestProject
     {
         static void Main(string[] args)
         {
-            //new Log("logs/latest.log").Enable();
+            new Log("logs/latest.log").Enable();
 
             GLWindow window = new GLWindow(new WindowSettings(500, 500), new GLInformation())
                 .Use(WindowUsage.All, new Window2D(), new BloomFeature());
