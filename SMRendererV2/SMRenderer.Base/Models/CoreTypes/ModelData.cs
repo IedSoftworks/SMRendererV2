@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL4;
 
-namespace SMRenderer.Core.Object
+namespace SMRenderer.Base.Models.CoreTypes
 {
     public class ModelData : List<float>
     {

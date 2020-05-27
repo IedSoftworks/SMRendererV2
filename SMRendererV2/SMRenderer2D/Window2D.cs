@@ -5,14 +5,13 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using SMRenderer.Base;
 using SMRenderer.Base.Keybinds;
+using SMRenderer.Base.Renderer;
+using SMRenderer.Base.Scene;
 using SMRenderer.Core.Enums;
-using SMRenderer.Core.Object;
 using SMRenderer.Core.Plugin;
 using SMRenderer.Core.Renderer;
 using SMRenderer.Core.Renderer.Framebuffers;
 using SMRenderer.Core.Window;
-using SMRenderer2D.Renderer;
-using Material = SMRenderer.Base.Objects.Material;
 
 namespace SMRenderer2D
 {
@@ -42,8 +41,6 @@ namespace SMRenderer2D
             GenericRenderer.AttribIDs["aPosition"] = 0;
             GenericRenderer.AttribIDs["aTexture"] = 1;
             GenericRenderer.AttribIDs["aNormal"] = 2;
-
-            GenericRenderer.FragDataIDs["color"] = 0;
         }
 
         public override void Loading(EventArgs e, GLWindow window)
@@ -59,7 +56,7 @@ namespace SMRenderer2D
         {
 
             //Scene.Current.Sort();
-            Scene.CurCam.CalculateView();
+            Scene.CurrentCam.CalculateView();
         }
 
         public override void Render(FrameEventArgs e, GLWindow window)

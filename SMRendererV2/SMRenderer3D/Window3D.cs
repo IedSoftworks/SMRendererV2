@@ -2,13 +2,16 @@
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using SMRenderer.Base;
+using SMRenderer.Base.Draw;
 using SMRenderer.Base.Keybinds;
+using SMRenderer.Base.Models;
+using SMRenderer.Base.Renderer;
+using SMRenderer.Base.Scene;
 using SMRenderer.Core.Enums;
 using SMRenderer.Core.Plugin;
 using SMRenderer.Core.Renderer;
 using SMRenderer.Core.Renderer.Framebuffers;
 using SMRenderer.Core.Window;
-using SMRenderer3D.Renderer;
 
 namespace SMRenderer3D
 {
@@ -43,7 +46,9 @@ namespace SMRenderer3D
             GenericRenderer.AttribIDs["aTexture"] = 1;
             GenericRenderer.AttribIDs["aNormal"] = 2;
 
-            GenericRenderer.FragDataIDs["color"] = 0;
+            Meshes.Load();
+
+            DrawObject.DefaultModel = Meshes.Cube;
         }
 
         public override void Loading(EventArgs e, GLWindow window)
@@ -63,7 +68,7 @@ namespace SMRenderer3D
 
         public override void Render(FrameEventArgs e, GLWindow window)
         {
-            Scene.CurCam.CalculateView();
+            Scene.CurrentCam.CalculateView();
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             Scene.Current.DrawAll();

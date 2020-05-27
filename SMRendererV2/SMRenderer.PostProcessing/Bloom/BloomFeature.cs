@@ -1,8 +1,8 @@
 ﻿using System;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
+using SMRenderer.Core;
 using SMRenderer.Core.Enums;
-using SMRenderer.Core.Object;
 using SMRenderer.Core.Plugin;
 using SMRenderer.Core.Renderer.Framebuffers;
 using SMRenderer.Core.Window;

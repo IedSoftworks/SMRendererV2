@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OpenTK.Graphics.OpenGL4;
+using SMRenderer.Core.Enums;
 using SMRenderer.Core.Exceptions;
 
 namespace SMRenderer.Core.Renderer
@@ -8,6 +10,7 @@ namespace SMRenderer.Core.Renderer
     /// <include file='renderer.docu' path='Documentation/ShaderFileCollection/Class'/>
     public class ShaderFileCollection : List<ShaderFile>
     {
+        #region Fields
         /// <include file='renderer.docu' path='Documentation/ShaderFileCollection/Fields/Field[@name="InDictionary"]'/>
         public List<string> InDictionary { get; private set; } = new List<string>();
         /// <include file='renderer.docu' path='Documentation/ShaderFileCollection/Fields/Field[@name="OutDictionary"]'/>
@@ -15,10 +18,24 @@ namespace SMRenderer.Core.Renderer
 
         public ShaderType Type;
 
-        public ShaderFileCollection(ShaderType type)
+        private Action<Dictionary<string, Uniform>> SetUniforms;
+
+        public string Name = "Shaders";
+        #endregion
+
+        #region Constructors
+
+        public ShaderFileCollection(ShaderType type) : this(type, a => { })
+        { }
+        public ShaderFileCollection(ShaderType type, Action<Dictionary<string, Uniform>> setUniformAction)
         {
             Type = type;
+            SetUniforms = setUniformAction;
         }
+
+        #endregion
+
+        #region Public Instance Methods
 
         public void Add(string source, bool individual = true)
         {
@@ -41,5 +58,11 @@ namespace SMRenderer.Core.Renderer
                 OutDictionary = OutDictionary.Concat(file.OutDictionary).ToList();
             }
         }
+
+        public void SetUniform(Dictionary<string, Uniform> Uniforms)
+        {
+            SetUniforms(Uniforms);
+        }
+        #endregion
     }
 }

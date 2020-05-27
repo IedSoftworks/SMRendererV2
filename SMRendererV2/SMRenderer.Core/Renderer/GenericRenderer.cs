@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using SMRenderer.Core.Enums;
 using SMRenderer.Core.Exceptions;
-using SMRenderer.Core.Object;
 using SMRenderer.Core.Renderer.Framebuffers;
 
 namespace SMRenderer.Core.Renderer
@@ -25,8 +23,6 @@ namespace SMRenderer.Core.Renderer
 
         /// <include file='renderer.docu' path='Documentation/GenericRenderer/Fields/Field[@name="AttribIDs"]'/>
         public static Dictionary<string, int> AttribIDs = new Dictionary<string, int>();
-        /// <include file='renderer.docu' path='Documentation/GenericRenderer/Fields/Field[@name="FragDataIDs"]'/>
-        public static Dictionary<string, int> FragDataIDs = new Dictionary<string, int>();
 
         public Dictionary<string, Uniform> Uniforms { get; private set; } = new Dictionary<string, Uniform>();
         public Dictionary<string, Uniform> U => Uniforms;

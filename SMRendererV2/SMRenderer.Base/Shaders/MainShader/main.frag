@@ -13,13 +13,14 @@ out vec4 bloom;
 uniform Material material;
 uniform sampler2D Texture;
 
-float colThreshold = 0.1;
+vec4 CalulateLight();
 
 void main() {
 	color = material.ObjectColor;
 	if(material.UseTexture == 1)
 		color *= texture(Texture, vTexture);
 
+	vec4 light = CalulateLight();
 
 	bloom = color;
 }

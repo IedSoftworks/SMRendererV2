@@ -3,14 +3,14 @@ using OpenTK.Graphics.OpenGL4;
 using SMRenderer.Core.Exceptions;
 using SMRenderer.Core.Renderer;
 
-namespace SMRenderer.Core.Object
+namespace SMRenderer.Base.Models.CoreTypes
 {
     public abstract class Model
     {
         public abstract ModelData Vertices { get; }
         public abstract ModelData UVs { get; }
         public abstract ModelData Normals { get; }
-        public abstract PrimitiveType PrimitiveType { get; }
+        public abstract PrimitiveType PrimitiveType { get; set; }
         public abstract int BufferSizeMultiplier { get; }
 
         public Dictionary<string, ModelData> AttribDataIndex;

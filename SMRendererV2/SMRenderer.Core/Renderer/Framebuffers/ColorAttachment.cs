@@ -1,5 +1,4 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using SMRenderer.Core.Object;
 
 namespace SMRenderer.Core.Renderer.Framebuffers
 {

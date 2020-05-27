@@ -2,10 +2,10 @@
 using System.Reflection;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
+using SMRenderer.Base.Models;
+using SMRenderer.Base.Models.CoreTypes;
 using SMRenderer.Core;
-using SMRenderer.Core.Object;
 using SMRenderer.Core.Renderer;
-using SMRenderer2D.Objects;
 
 namespace SMRenderer.PostProcessing.Bloom
 {
@@ -52,7 +52,7 @@ namespace SMRenderer.PostProcessing.Bloom
             U["bloomSizeFactor"].SetUniform1(BloomSettings.SizeFactor);
             U["multiplier"].SetUniform1(BloomSettings.Multiplier);
 
-            Model obj = SMQuad.Object;
+            Model obj = Meshes.Cube;
 
             GL.BindVertexArray(obj.VAO);
             GL.DrawArrays(obj.PrimitiveType, 0, obj.VertexCount);

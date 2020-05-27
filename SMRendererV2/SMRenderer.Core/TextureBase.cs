@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 
-namespace SMRenderer.Core.Object
+namespace SMRenderer.Core
 {
     public class TextureBase
     {

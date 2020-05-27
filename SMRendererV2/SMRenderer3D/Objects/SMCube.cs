@@ -4,9 +4,9 @@ using SMRenderer.Core.Object;
 
 namespace SMRenderer3D.Objects
 {
-    public class SMQuad : SMModelBase
+    public class SMCube : SMModelBase
     {
-        public static SMQuad Object = new SMQuad();
+        public static SMCube Object = new SMCube();
 
         public override ModelData Vertices { get; } = new ModelData()
         {
@@ -115,7 +115,7 @@ namespace SMRenderer3D.Objects
 
         public override PrimitiveType PrimitiveType { get; } = PrimitiveType.Triangles;
 
-        private SMQuad()
+        private SMCube()
         {
             Compile();
         }

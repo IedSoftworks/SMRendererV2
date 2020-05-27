@@ -1,8 +1,10 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
 using OpenTK.Graphics.OpenGL4;
+using SMRenderer.Base.Models.CoreTypes;
+using SMRenderer.Core;
 
-namespace SMRenderer.Core.Object
+namespace SMRenderer.Base.Models
 {
     public class Texture : TextureBase
     {

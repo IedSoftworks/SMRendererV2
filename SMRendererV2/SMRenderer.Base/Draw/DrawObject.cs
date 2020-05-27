@@ -1,16 +1,16 @@
 ﻿using OpenTK;
-using SMRenderer.Base;
 using SMRenderer.Base.Interfaces;
+using SMRenderer.Base.Models;
+using SMRenderer.Base.Models.CoreTypes;
+using SMRenderer.Base.Renderer;
 using SMRenderer.Base.Types.VectorTypes;
-using SMRenderer.Core.Object;
-using SMRenderer3D.Objects;
-using SMRenderer3D.Renderer;
-using Material = SMRenderer.Base.Objects.Material;
 
-namespace SMRenderer3D.Draw
+namespace SMRenderer.Base.Draw
 {
     public class DrawObject : IShowObject
     {
+        public static Model DefaultModel = Meshes.Cube;
+
         public float RenderPosition { get; set; }
 
         private Matrix4 _modelMatrix;
@@ -19,7 +19,7 @@ namespace SMRenderer3D.Draw
         public Size Size = new Size(1,1);
         public Rotation Rotation = new Rotation();
 
-        public Model Mesh = SMQuad.Object;
+        public Model Mesh = DefaultModel;
         public Material Material = new Material();
 
         public void Prepare()
@@ -29,7 +29,7 @@ namespace SMRenderer3D.Draw
 
         public void Draw()
         {
-            GeneralRenderer.program.Draw(_modelMatrix * Scene.CurCam.ViewMatrix, Mesh, Material);
+            GeneralRenderer.program.Draw(_modelMatrix, Mesh, Material);
         }
 
         public void Add(SMItemCollection collection)
