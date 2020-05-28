@@ -51,6 +51,7 @@
     <Compile Include="Models\Material.cs" />
     <Compile Include="Models\Mesh.cs" />
     <Compile Include="Models\Meshes.cs" />
+    <Compile Include="Models\Objects\AxisHelper.cs" />
     <Compile Include="Models\Texture.cs" />
     <Compile Include="Renderer\GeneralRenderer.cs" />
     <Compile Include="Scene\Camera.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Types\VectorTypes\Position.cs" />
     <Compile Include="Types\VectorTypes\Rotation.cs" />
     <Compile Include="Types\VectorTypes\Size.cs" />
+    <Compile Include="DefaultWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Models\BaseObject.mtl" />

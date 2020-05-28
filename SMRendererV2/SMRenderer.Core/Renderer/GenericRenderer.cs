@@ -48,7 +48,7 @@ namespace SMRenderer.Core.Renderer
             foreach (string inValue in VertexFiles.InDictionary)
             {
                 if (!AttribIDs.ContainsKey(inValue))
-                    throw new ShaderLoadingException("[General] There is no id found for attribute '" + inValue + "'. Do use the attribute add it to GenericRenderer.AttribIDs.");
+                    throw new ShaderLoadingException("[General] There is no id found for attribute '" + inValue + "'. To use the attribute add it to GenericRenderer.AttribIDs.");
 
                 int id = AttribIDs[inValue];
                 GL.BindAttribLocation(mProgramId, id, inValue);

@@ -11,6 +11,7 @@ namespace SMRenderer.Base.Models
         public override ModelData Vertices { get; } = new ModelData();
         public override ModelData Normals { get; } = new ModelData();
         public override ModelData UVs { get; } = new ModelData(pointerSize:2);
+        public virtual ModelData VertexColors { get; } = new ModelData(pointerSize: 4);
 
         public override int BufferSizeMultiplier { get; } = 3;
         public override PrimitiveType PrimitiveType { get; set; } = PrimitiveType.Triangles;
@@ -21,7 +22,8 @@ namespace SMRenderer.Base.Models
             {
                 { "aPosition", Vertices },
                 { "aTexture", UVs },
-                { "aNormal", Normals }
+                { "aNormal", Normals },
+                { "aColor", VertexColors }
             };
         }
     }

@@ -15,11 +15,9 @@ using SMRenderer.Core.Window;
 
 namespace SMRenderer3D
 {
-    public class Window3D : WindowPlugin
+    public class Window3D : DefaultWindow
     {
         public override WindowUsage NeededUsage { get; } = WindowUsage.Load | WindowUsage.Render;
-
-        public Framebuffer MainFramebuffer;
 
         public override Type[] Renderers { get; } = new[]
         {
@@ -33,22 +31,6 @@ namespace SMRenderer3D
         public Window3D(int FOV = 90)
         {
             this.FOV = FOV;
-
-            Framebuffers = new[] { MainFramebuffer = new Framebuffer(new ColorAttachmentCollection() { "color" }) };
-
-            Framebuffer.MainFramebuffer = MainFramebuffer;
-            Framebuffer.MainFramebuffer.Activate(false);
-        }
-
-        public override void Load(GLWindow window)
-        {
-            GenericRenderer.AttribIDs["aPosition"] = 0;
-            GenericRenderer.AttribIDs["aTexture"] = 1;
-            GenericRenderer.AttribIDs["aNormal"] = 2;
-
-            Meshes.Load();
-
-            DrawObject.DefaultModel = Meshes.Cube;
         }
 
         public override void Loading(EventArgs e, GLWindow window)
@@ -60,27 +42,9 @@ namespace SMRenderer3D
             GL.ClearColor(window._glInformation.ClearColor);
         }
 
-        public override void BeforeRender(FrameEventArgs e, GLWindow window)
-        {
-
-            //Scene.Current.Sort();
-        }
-
-        public override void Render(FrameEventArgs e, GLWindow window)
-        {
-            Scene.CurrentCam.CalculateView();
-
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            Scene.Current.DrawAll();
-        }
-
-        public override void Update(FrameEventArgs e, GLWindow window)
-        {
-            KeybindCollection.ExecuteAutoCheck();
-        }
-
         public override void Resize(EventArgs e, GLWindow window)
         {
+            base.Resize(e, window);
             Camera.WorldMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(FOV), window.Width / window.Height, .1f, 100f);
         }
     }

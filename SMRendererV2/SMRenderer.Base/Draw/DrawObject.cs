@@ -22,6 +22,11 @@ namespace SMRenderer.Base.Draw
         public Model Mesh = DefaultModel;
         public Material Material = new Material();
 
+        public DrawObject(bool instantPrepare = false)
+        {
+            if (instantPrepare) Prepare();
+        }
+
         public void Prepare()
         {
             _modelMatrix = (Matrix4)Size * Rotation * Position;

@@ -15,7 +15,7 @@ using SMRenderer.Core.Window;
 
 namespace SMRenderer2D
 {
-    public class Window2D : WindowPlugin
+    public class Window2D : DefaultWindow
     {
         public override WindowUsage NeededUsage { get; } = WindowUsage.Load | WindowUsage.Render;
 
@@ -28,21 +28,6 @@ namespace SMRenderer2D
 
         public override Framebuffer[] Framebuffers { get; }
 
-        public Window2D()
-        {
-            Framebuffers = new[] { MainFramebuffer = new Framebuffer(new ColorAttachmentCollection() { "color" }) };
-
-            Framebuffer.MainFramebuffer = MainFramebuffer;
-            Framebuffer.MainFramebuffer.Activate(false);
-        }
-
-        public override void Load(GLWindow window)
-        {
-            GenericRenderer.AttribIDs["aPosition"] = 0;
-            GenericRenderer.AttribIDs["aTexture"] = 1;
-            GenericRenderer.AttribIDs["aNormal"] = 2;
-        }
-
         public override void Loading(EventArgs e, GLWindow window)
         {
             GL.Enable(EnableCap.Blend);
@@ -52,27 +37,9 @@ namespace SMRenderer2D
             GL.ClearColor(window._glInformation.ClearColor);
         }
 
-        public override void BeforeRender(FrameEventArgs e, GLWindow window)
-        {
-
-            //Scene.Current.Sort();
-            Scene.CurrentCam.CalculateView();
-        }
-
-        public override void Render(FrameEventArgs e, GLWindow window)
-        {
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            Scene.Current.DrawAll();
-        }
-
-        public override void Update(FrameEventArgs e, GLWindow window)
-        {
-            KeybindCollection.ExecuteAutoCheck();
-        }
-
         public override void Resize(EventArgs e, GLWindow window)
         {
-            GL.Viewport(window.ClientRectangle);
+            base.Resize(e, window);
 
             Camera.WorldMatrix = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, .1f, 100f);
         }

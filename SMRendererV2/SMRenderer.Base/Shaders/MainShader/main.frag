@@ -6,6 +6,7 @@ struct Material {
 };
 
 in vec2 vTexture;
+in vec4 vColor;
 
 out vec4 color;
 out vec4 bloom;
@@ -16,7 +17,7 @@ uniform sampler2D Texture;
 vec4 CalulateLight();
 
 void main() {
-	color = material.ObjectColor;
+	color = material.ObjectColor * vColor;
 	if(material.UseTexture == 1)
 		color *= texture(Texture, vTexture);
 

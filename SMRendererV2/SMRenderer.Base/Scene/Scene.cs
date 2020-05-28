@@ -1,10 +1,19 @@
-﻿namespace SMRenderer.Base.Scene
+﻿using SMRenderer.Base.Draw;
+using SMRenderer.Base.Types.VectorTypes;
+
+namespace SMRenderer.Base.Scene
 {
     public class Scene : SMItemCollection
     {
         public static Scene Current { get; private set; } = new Scene();
         public static SMItemCollection HUD = new SMItemCollection();
         public static Camera CurrentCam => Current.Camera;
+        public static DrawObject AxisHelper = new DrawObject()
+        {
+            Size = new Size(5),
+            Mesh = Models.Objects.AxisHelper.Object
+        };
+
         public static LightOptions CurrentLight => Current.Light;
 
         public SMItemCollection Background = new SMItemCollection();
@@ -27,6 +36,12 @@
 
         public void DrawAll()
         {
+            if (AxisHelper != null)
+            {
+                AxisHelper.Prepare();
+                AxisHelper.Draw();
+            }
+
             Background.Prepare();
             Background.Draw();
 
