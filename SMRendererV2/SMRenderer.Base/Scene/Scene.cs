@@ -8,7 +8,7 @@ namespace SMRenderer.Base.Scene
         public static Scene Current { get; private set; } = new Scene();
         public static SMItemCollection HUD = new SMItemCollection();
         public static Camera CurrentCam => Current.Camera;
-        public static DrawObject AxisHelper = new DrawObject()
+        static DrawObject _axisHelper = new DrawObject()
         {
             Size = new Size(5),
             Mesh = Models.Objects.AxisHelper.Object
@@ -21,6 +21,8 @@ namespace SMRenderer.Base.Scene
         public Camera Camera = new Camera();
 
         public LightOptions Light = new LightOptions();
+
+        public DrawObject AxisHelper = _axisHelper;
 
         public static void ChangeScene(Scene nextScene)
         {
