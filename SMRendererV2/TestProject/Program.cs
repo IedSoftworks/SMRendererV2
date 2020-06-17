@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Drawing;
-using System.IO;
-using System.Reflection;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
@@ -10,34 +7,48 @@ using SMRenderer.Base;
 using SMRenderer.Base.Draw;
 using SMRenderer.Base.Keybinds;
 using SMRenderer.Base.Models;
-using SMRenderer.Base.Models.Objects;
+using SMRenderer.Base.Models.Import;
 using SMRenderer.Base.Scene;
 using SMRenderer.Base.Scene.Lights;
+using SMRenderer.Base.Types.Animations;
 using SMRenderer.Base.Types.Extensions;
 using SMRenderer.Core.Enums;
 using SMRenderer.Core.Window;
 using SMRenderer.Base.Types.VectorTypes;
-using SMRenderer2D;
-using SMRenderer3D;
+using SMRenderer.Core;
+using SMRenderer.PostProcessing.Bloom;
 using Color = SMRenderer.Base.Types.VectorTypes.Color;
-using Size = SMRenderer.Base.Types.VectorTypes.Size;
 
 namespace TestProject
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            //new Log("logs/latest.log").Enable();
 
-            GLWindow window = new GLWindow(new WindowSettings(500, 500) {VSync = VSyncMode.On}, new GLInformation() {ClearColor = Color4.FromXyz(new Vector4(0.2f, 0.3f, 0.3f, 1.0f)) })
-                .Use(WindowUsage.All, new Window3D(45));
+            new Log("latest.log").Enable();
+
+            GLWindow window = new GLWindow(new WindowSettings(500, 500) {VSync = VSyncMode.On},
+                new GLInformation() {ClearColor = Color4.FromXyz(new Vector4(0.2f, 0.3f, 0.3f, 1.0f))})
+                .Use(WindowUsage.All, new DefaultWindow());
             window.Load += (sender, eventArgs) => Test1();
             window.Run();
         }
 
         static void Test1()
         {
+            DrawObject collection = new DrawObject()
+            {
+                Mesh = Meshes.Torus,
+                Size = new Size(1),
+            };
+            Animation ani = Animation.CreateValueAnimation(collection.Position, TimeSpan.FromSeconds(3), collection.Position, new AnimationVector(-2.5f), AnimationCalculations.BezierCalculation());
+
+            DrawParticle particle = new DrawParticle()
+            {
+                Amount = 256, Mesh = Meshes.Sphere, Speed = 25, ObjectSize = new Size(.2f), PrettyRemove = true
+            };
+
             KeybindCollection.AutoCheckKeybindCollections.Add(new KeybindCollection()
             {
                 new Keybind(a => Scene.CurrentCam.Position.X += .1f, Key.W),
@@ -46,28 +57,15 @@ namespace TestProject
                 new Keybind(a => Scene.CurrentCam.Position.Z -= .1f, Key.D),
                 new Keybind(a => Scene.CurrentCam.Position.Y += .1f, Key.Space),
                 new Keybind(a => Scene.CurrentCam.Position.Y -= .1f, Key.ControlLeft),
+                new Keybind(a => {
+                    Console.Write("Pause");
+                }, Key.P),
+                new Keybind(a => ani.Start(), Key.X)
             });
 
-            Light light = new PhongLight()
-            {
-                Color = new Color(1, 0, 1),
-                Direction = new Vector3(-2, -2, -2),
-            };
-            /*
-            DrawObject groundPlate = new DrawObject
-            {
-                Position = new Position(5,0,5),
-                Size = new Size(50,1,50),
-                Rotation = new Rotation(y: 90),
-                Mesh = Meshes.Plane
-            };*/
-
-
-            Scene.CurrentCam.Target = new Position(0,0,0);
-            light.Position = Scene.CurrentCam.Position = new Position(-2,-2, -2);
-            
-            Scene.CurrentLight.Add(light);
-        
+            Scene.CurrentCam.Position = new Position(0,1,10);
+            Scene.Current.AddRange(collection, particle);
+            Scene.Current.Remove(particle);
         }
     }
 }
