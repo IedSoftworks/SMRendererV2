@@ -2,15 +2,12 @@
 
 namespace SMRenderer.Core
 {
-    public class TextureBase
+    public class TextureBase : IGLObject
     {
-        public int TexID = -1;
+        public int ID { get; set; } = -1;
+        public ObjectLabelIdentifier Identifier { get; set; } = ObjectLabelIdentifier.Texture;
 
-        public void ApplyTo(int uniformID, int textureID)
-        {
-            GL.ActiveTexture((TextureUnit)(33984 + textureID));
-            GL.BindTexture(TextureTarget.Texture2D, TexID);
-            GL.Uniform1(uniformID, textureID);
-        }
+        public int Height;
+        public int Width;
     }
 }

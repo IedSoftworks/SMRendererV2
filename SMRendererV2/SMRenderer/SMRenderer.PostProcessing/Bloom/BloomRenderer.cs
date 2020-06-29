@@ -2,10 +2,12 @@
 using System.Reflection;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
-using SMRenderer.Base.Models;
 using SMRenderer.Core;
 using SMRenderer.Core.Models;
 using SMRenderer.Core.Renderer;
+using SMRenderer.Models;
+using SMRenderer.Utility;
+
 
 namespace SMRenderer.PostProcessing.Bloom
 {
@@ -15,11 +17,11 @@ namespace SMRenderer.PostProcessing.Bloom
 
         public override ShaderFileCollection VertexFiles { get; } = new ShaderFileCollection(ShaderType.VertexShader)
         {
-            Utility.ReadAssemblyFile(Assembly.GetExecutingAssembly(), "Bloom.ShaderFiles.main.vert")
+            AssemblyUtility.ReadAssemblyFile("Bloom.ShaderFiles.main.vert")
         };
         public override ShaderFileCollection FragmentFiles { get; } = new ShaderFileCollection(ShaderType.FragmentShader)
         {
-            Utility.ReadAssemblyFile(Assembly.GetExecutingAssembly(), "Bloom.ShaderFiles.main.frag")
+            AssemblyUtility.ReadAssemblyFile("Bloom.ShaderFiles.main.frag")
         };
 
         public override Dictionary<string, int> CustomFragData { get; } = new Dictionary<string, int>
@@ -37,20 +39,20 @@ namespace SMRenderer.PostProcessing.Bloom
             int width, int height, 
             TextureBase scene, TextureBase bloomTexture)
         {
-            U["MVP"].SetMatrix4(ref MVP);
+            U["MVP"]?.SetMatrix4(ref MVP);
 
-            bloomTexture.ApplyTo(U["BloomTex"], 0);
+            U["BloomTex"]?.SetTexture(bloomTexture, 0);
 
-            if (merge) scene.ApplyTo(U["Scene"], 1);
-            U["Merge"].SetUniform1(merge);
+            if (merge) U["Scene"]?.SetTexture(scene, 1);
+            U["Merge"]?.SetUniform1(merge);
 
-            U["Horizontal"].SetUniform1(hoz);
+            U["Horizontal"]?.SetUniform1(hoz);
             
-            U["weight"].SetUniform1(BloomSettings.Weights.Length, BloomSettings.Weights);
-            U["weightCount"].SetUniform1(BloomSettings.Weights.Length);
-            U["tex_offset"].SetUniform2(BloomSettings.TextureOffset);
-            U["bloomSizeFactor"].SetUniform1(BloomSettings.SizeFactor);
-            U["multiplier"].SetUniform1(BloomSettings.Multiplier);
+            U["weight"]?.SetUniform1(BloomSettings.Weights.Length, BloomSettings.Weights);
+            U["weightCount"]?.SetUniform1(BloomSettings.Weights.Length);
+            U["tex_offset"]?.SetUniform2(BloomSettings.TextureOffset);
+            U["bloomSizeFactor"]?.SetUniform1(BloomSettings.SizeFactor);
+            U["multiplier"]?.SetUniform1(BloomSettings.Multiplier);
 
             Model obj = Meshes.Plane;
 

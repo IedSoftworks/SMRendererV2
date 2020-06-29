@@ -14,6 +14,7 @@ namespace SMRenderer.Core
         /// </summary>
         public static List<Timer> ActiveTimers = new List<Timer>();
 
+        public virtual bool AutoStop { get; } = true;
         /// <summary>
         /// The current time in seconds
         /// </summary>
@@ -83,7 +84,7 @@ namespace SMRenderer.Core
         public virtual void PerformTick(double delta)
         {
             CurrentTime += delta;
-            if (CurrentTime / TargetTime >= 1) Stop(false);
+            if (AutoStop && CurrentTime >= TargetTime) Stop(false);
             Tick?.Invoke(this, delta);
         }
 

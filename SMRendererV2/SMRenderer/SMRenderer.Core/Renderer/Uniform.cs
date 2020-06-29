@@ -139,6 +139,13 @@ namespace SMRenderer.Core.Renderer
 
         #endregion
 
+        public void SetTexture(TextureBase texture, int texturePosition)
+        {
+            GL.ActiveTexture((TextureUnit)(33984 + texturePosition));
+            GL.BindTexture(TextureTarget.Texture2D, texture.ID);
+            GL.Uniform1(Location, texturePosition);
+        }
+
         public static implicit operator int(Uniform u) => u.Location;
     }
 }

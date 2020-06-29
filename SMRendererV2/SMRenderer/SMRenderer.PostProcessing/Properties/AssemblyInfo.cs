@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die einer Assembly zugeordnet sind.
 [assembly: AssemblyTitle("SMRenderer.PostProcessing")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Additional SMRenderer's Post Processing Effects")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("SMRenderer.PostProcessing")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2020")]
+[assembly: AssemblyCompany("iedSoftworks")]
+[assembly: AssemblyProduct("SMRenderer")]
+[assembly: AssemblyCopyright("Copyright © iedSoftworks 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

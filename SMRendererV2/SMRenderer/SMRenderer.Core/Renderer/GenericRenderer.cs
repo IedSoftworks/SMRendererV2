@@ -9,12 +9,13 @@ using SMRenderer.Core.Renderer.Framebuffers;
 namespace SMRenderer.Core.Renderer
 {
     /// <include file='renderer.docu' path='Documentation/GenericRenderer/Class'/>
-    public abstract class GenericRenderer
+    public abstract class GenericRenderer : IGLObject
     {
         public static Dictionary<string, int> DefaultFragData;
 
-        /// <include file='renderer.docu' path='Documentation/GenericRenderer/Fields/Field[@name="mProgramId"]'/>
-        public int mProgramId { get; private set; } = -1;
+        public int ID { get; set; } = -1;
+
+        public ObjectLabelIdentifier Identifier { get; set; } = ObjectLabelIdentifier.Program;
 
         /// <include file='renderer.docu' path='Documentation/GenericRenderer/Fields/Field[@name="VertexFiles"]'/>
         public abstract ShaderFileCollection VertexFiles { get; }
@@ -27,81 +28,52 @@ namespace SMRenderer.Core.Renderer
         /// <include file='renderer.docu' path='Documentation/GenericRenderer/Fields/Field[@name="AttribIDs"]'/>
         public static Dictionary<string, int> AttribIDs = new Dictionary<string, int>();
 
-        public Dictionary<string, Uniform> Uniforms { get; private set; } = new Dictionary<string, Uniform>();
-        public Dictionary<string, Uniform> U => Uniforms;
+        public UniformCollection Uniforms { get; private set; } = new UniformCollection();
+        public UniformCollection U => Uniforms;
 
         internal virtual void Compile()
         {
             Log.Write(LogWriteType.Info, "Loading render program '" + GetType().Name + "'");
 
             // Create ID
-            mProgramId = GL.CreateProgram();
+            ID = GL.CreateProgram();
+            GLDebug.Name(this, GetType().Name);
 
             // Load all files in the ID
             if (VertexFiles == null || FragmentFiles == null)
                 throw new ShaderLoadingException("[General] No Vertex or Fragment files found.");
 
-            VertexFiles.Load(mProgramId);
-            FragmentFiles.Load(mProgramId);
+            VertexFiles.Load(ID);
+            FragmentFiles.Load(ID);
 
             if (VertexFiles.Any(a => a.ID == -1) && FragmentFiles.Any(a => a.ID == -1))
                 throw new ShaderLoadingException("[General] Not all of your shaders has been loaded correctly.\n\nRenderer: " + GetType().Name);
 
-            foreach (string inValue in VertexFiles.InDictionary)
-            {
-                if (!AttribIDs.ContainsKey(inValue))
-                {
-                    Log.Write(LogWriteType.Warning, "[General] There is no id found for attribute '" +
-                        inValue + "'. To use the attribute add it to GenericRenderer.AttribIDs.");
-                    continue;
-                }
-
-                int id = AttribIDs[inValue];
-                GL.BindAttribLocation(mProgramId, id, inValue);
-            }
-            foreach (string outValue in FragmentFiles.OutDictionary)
-            {
-                if (CustomFragData?.ContainsKey(outValue) == true) GL.BindFragDataLocation(mProgramId, CustomFragData[outValue], outValue);
-
-                else
-                {
-                    ColorAttachment id = Framebuffer.ActiveFramebuffer.ColorAttachments.FirstOrDefault(a =>
-                        a.FragOutputVariable == outValue);
-                    if (id != null)
-                        GL.BindFragDataLocation(mProgramId, id, outValue);
-                    else
-                        Log.Write(LogWriteType.Warning,
-                            "Fragment out variable '" + outValue +
-                            "' doesn't exist in current framebuffer. Currently ignored.");
-                }
-            }
-
-            GL.LinkProgram(mProgramId);
+            GL.LinkProgram(ID);
 
             VertexFiles.ForEach(a =>
             {
-                GL.DetachShader(mProgramId, a.ID);
+                GL.DetachShader(ID, a.ID);
                 if (a.Individual) GL.DeleteShader(a.ID);
             });
             FragmentFiles.ForEach(a =>
             {
-                GL.DetachShader(mProgramId, a.ID);
+                GL.DetachShader(ID, a.ID);
                 if (a.Individual) GL.DeleteShader(a.ID);
             });
 
-            GL.GetProgram(mProgramId, GetProgramParameterName.ActiveUniforms, out var uniformAmount);
+            GL.GetProgram(ID, GetProgramParameterName.ActiveUniforms, out var uniformAmount);
 
             for (int i = 0; i < uniformAmount; i++)
             {
-                var key = GL.GetActiveUniform(mProgramId, i, out _, out _);
-                var location = GL.GetUniformLocation(mProgramId, key);
+                var key = GL.GetActiveUniform(ID, i, out _, out _);
+                var location = GL.GetUniformLocation(ID, key);
 
+                key = key.Split('[')[0];
                 Uniforms.Add(key, new Uniform(location));
-
-                Log.Write("Uniform Target Test", key);
             }
 
-            Utility.CheckGLErrors();
+            GLDebug.CheckGLErrors();
         }
 
         public void CleanUp()
@@ -110,6 +82,6 @@ namespace SMRenderer.Core.Renderer
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 
-        public static implicit operator int(GenericRenderer renderer) => renderer.mProgramId;
+        public static implicit operator int(GenericRenderer renderer) => renderer.ID;
     }
 }

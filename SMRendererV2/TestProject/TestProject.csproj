@@ -65,10 +65,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SMRenderer\SMRenderer.Base\SMRenderer.Base.csproj">
-      <Project>{53081c3e-ccae-45d4-bee9-1d8f3bd1bbc4}</Project>
-      <Name>SMRenderer.Base</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SMRenderer\SMRenderer.Core\SMRenderer.Core.csproj">
       <Project>{1d351cc8-d673-49e9-a016-7aa435531743}</Project>
       <Name>SMRenderer.Core</Name>
@@ -76,6 +72,10 @@
     <ProjectReference Include="..\SMRenderer\SMRenderer.PostProcessing\SMRenderer.PostProcessing.csproj">
       <Project>{a827bca6-7175-4947-b23d-75bcef50795d}</Project>
       <Name>SMRenderer.PostProcessing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SMRenderer\SMRenderer\SMRenderer.csproj">
+      <Project>{53081c3e-ccae-45d4-bee9-1d8f3bd1bbc4}</Project>
+      <Name>SMRenderer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

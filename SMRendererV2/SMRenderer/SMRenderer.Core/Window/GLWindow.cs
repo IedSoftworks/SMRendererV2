@@ -62,6 +62,8 @@ namespace SMRenderer.Core.Window
         /// <inheritdoc />
         protected override void OnLoad(EventArgs e)
         {
+            GLDebug.Setup();
+
             Window = this;
 
             GLInformation.Renderers.ForEach(a => a.Compile() );

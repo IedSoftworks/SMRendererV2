@@ -6,9 +6,17 @@ using SMRenderer.Core.Renderer;
 
 namespace SMRenderer.Core.Models
 {
-    public abstract class Model
+    public abstract class Model : IGLObject
     {
-        public int _vao = -1;
+        private int _vao = -1;
+        public int ID
+        {
+            get => _vao;
+            set
+            { }
+        }
+
+        public ObjectLabelIdentifier Identifier { get; set; } = ObjectLabelIdentifier.VertexArray;
 
         public abstract ModelData Vertices { get; }
         public abstract ModelData UVs { get; }
