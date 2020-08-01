@@ -1,105 +1,163 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Forms;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
-using SMRenderer.Animations;
-using SMRenderer.Core.Enums;
-using SMRenderer.Core.Window;
-using SMRenderer.Core;
-using SMRenderer.Core.Models;
-using SMRenderer.Draw;
-using SMRenderer.Keybinds;
-using SMRenderer.Models;
-using SMRenderer.PostProcessing.Bloom;
-using SMRenderer.Scene;
-using SMRenderer.Scene.Cameras;
-using SMRenderer.Scene.Lights;
-using SMRenderer.Types.Extensions;
-using SMRenderer.Types.VectorTypes;
-using SMRenderer.Window;
-using Color = SMRenderer.Types.VectorTypes.Color;
+using SM;
+using SM.Animations;
+using SM.Core.Enums;
+using SM.Core.Window;
+using SM.Core;
+using SM.Core.Models;
+using SM.Scene.Draw;
+using SM.Data.Fonts;
+using SM.Keybinds;
+using SM.Data.Models;
+using SM.Data.Models.Objects;
+using SM.PostProcessing.Bloom;
+using SM.Scene;
+using SM.Scene.Cameras;
+using SM.Scene.Lights;
+using SM.Data.Types;
+using SM.Data.Types.Extensions;
+using SM.Data.Types.VectorTypes;
+using SM.Scene.Draw.Particles;
+using Color = SM.Data.Types.VectorTypes.Color;
+using Mouse = SM.Controls.Mouse;
+using Size = SM.Data.Types.VectorTypes.Size;
 
 namespace TestProject
 {
     class Program
     {
-        static void Main()
+        private static PerspectiveCamera Camera3D;
+        private static OrthographicCamera Camera2D;
+
+        private static Font Arial;
+        private static DrawObject obj;
+        private static DrawText mousePos;
+        static void Main(string[] param)
         {
+            if (param.Contains("-compileData"))
+            {
+                DataManage.Compile();
+                Environment.Exit(0);
+            }
+
+            if (param.Contains("-advdebug")) GLDebug.AdvDebugging = true;
+
+            Arial = new Font(@"C:\Windows\Fonts\Arial.ttf");
+
+            new Log("latest.log").Enable();
+
+            GLWindow window = new GLWindow(new WindowSettings(.9f) {VSync = VSyncMode.Off},
+                    new GLInformation() {ClearColor = Color.From255Basis(128,128,128)})
+                .Use(WindowUsage.All, new DefaultWindow());
+            window.Load += (sender, eventArgs) =>
+            {
+                Test3D();
+                HUD();
+            };
+            window.Run();
+        }
+
+        private static void HUD()
+        {
+            mousePos = new DrawText(Arial, "< >")
+            {
+                FontSize = 50,
+                Material = {AllowLight = false, DiffuseColor = new Color(1, 0, 0, 1)}
+            };
+            mousePos.Size.Y = 75;
+            Scene.HUD.Add(mousePos);
+        }
+
+        private static void Test3D()
+        {
+            Camera3D = (PerspectiveCamera) Scene.CurrentCam;
+
+            int MoveSpeed = 10;
+            int RotateSpeed = 20;
             KeybindCollection.AutoCheckKeybindCollections.Add(new KeybindCollection()
             {
-                new Keybind(a => Scene.CurrentCam.Position.X += .1f, Key.W),
-                new Keybind(a => Scene.CurrentCam.Position.X -= .1f, Key.S),
-                new Keybind(a => Scene.CurrentCam.Position.Z += .1f, Key.A),
-                new Keybind(a => Scene.CurrentCam.Position.Z -= .1f, Key.D),
-                new Keybind(a => Scene.CurrentCam.Position.Y += .1f, Key.Space),
-                new Keybind(a => Scene.CurrentCam.Position.Y -= .1f, Key.ControlLeft),
+                new Keybind(a => Scene.CurrentCam.Position.X += MoveSpeed * (float)SMGlobals.UpdateDeltatime, Key.W),
+                new Keybind(a => Scene.CurrentCam.Position.X -= MoveSpeed * (float)SMGlobals.UpdateDeltatime, Key.S),
+                new Keybind(a => Scene.CurrentCam.Position.Z += MoveSpeed * (float)SMGlobals.UpdateDeltatime, Key.A),
+                new Keybind(a => Scene.CurrentCam.Position.Z -= MoveSpeed * (float)SMGlobals.UpdateDeltatime, Key.D),
+                new Keybind(a => Scene.CurrentCam.Position.Y += MoveSpeed * (float)SMGlobals.UpdateDeltatime, Key.Space),
+                new Keybind(a => Scene.CurrentCam.Position.Y -= MoveSpeed * (float)SMGlobals.UpdateDeltatime, Key.ControlLeft),
+
+                new Keybind(a => Camera3D.Rotation.Y += RotateSpeed * (float)SMGlobals.UpdateDeltatime, Key.Up),
+                new Keybind(a => Camera3D.Rotation.Y -= RotateSpeed * (float)SMGlobals.UpdateDeltatime, Key.Down),
+                new Keybind(a => Camera3D.Rotation.X -= RotateSpeed * (float)SMGlobals.UpdateDeltatime, Key.Left),
+                new Keybind(a => Camera3D.Rotation.X += RotateSpeed * (float)SMGlobals.UpdateDeltatime, Key.Right),
+
+                new Keybind(new MouseButton[] {MouseButton.Left}, new Key[] {}, a =>
+                {
+                    Vector3 pos = Mouse.GetMouseIn3DWorld(Scene.Current, out _);
+                    Console.Write("Pause");
+                }),
+
                 new Keybind(a => {
                     Console.Write("Pause");
                 }, Key.P)
             });
 
-            //new Log("latest.log").Enable();
+            //Scene.Current.Lights.Ambient = Color.From255Basis(255, 255, 255);
+            Scene.Current.AxisHelper = false;
 
-            GLWindow window = new GLWindow(new WindowSettings(500, 500) {VSync = VSyncMode.On},
-                new GLInformation() {ClearColor = Color4.FromXyz(new Vector4(0.2f, 0.3f, 0.3f, 1.0f))})
-                .Use(WindowUsage.All, new DefaultWindow());
-            window.Load += (sender, eventArgs) => Test1();
-            window.Run();
-        }
-
-        static void Test1()
-        {
-            float i;
-            int row = 32;
-            int column = 32;
-            Mesh mesh = new Mesh()
+            DrawParticles particles = new DrawParticles(new ConeParticles() {RotateTowardsOrigin = true})
             {
-                PrimitiveType = PrimitiveType.Lines
-            };
-            for (i = 1; i < row; i++)
-            {
-                mesh.Vertices.Add(0, i / row, 0);
-                mesh.Vertices.Add(1, i / row, 0);
-                mesh.VertexColors.AddRange(new ModelValue(1,0,0,1), new ModelValue(1, 0, 0, 1));
-            }
-
-            for (i = 1; i < column; i++)
-            {
-                mesh.Vertices.Add(i / column, 0, 0);
-                mesh.Vertices.Add(i / column, 1, 0);
-
-                mesh.VertexColors.AddRange(new ModelValue(0, 0, 1, 1), new ModelValue(0, 0, 1, 1));
-            }
-
-            CallParameter parameter = new CallParameter()
-            {
-                Size = new Size(5)
-            };
-
-            DrawCall obj = new DrawCall()
-            {
-                Mesh = mesh,
                 
             };
-            obj.DrawCallParameters.Add(parameter);
-
-            DrawObject obj2 = new DrawObject()
+            DrawObject obj = new DrawObject()
             {
-                Position = new Position(2.5f, 2.5f, 2.5f),
-                Size = new Size(2)
+                Mesh = Meshes.Cylinder,
+                Clickable = true,
             };
-            obj2.Material.DiffuseColor = Color4.Black;
+            Spotlight spotlight = new Spotlight(new Position(20, 1), new Direction(x: -1f, 1f))
+            {
+                InnerCutoff = 50,
+                OuterCutoff = 60
+            };
 
-            Light light = new Light(LightType.Point, obj2.Position);
-            Scene.Current.Lights.Add(light);
-            Scene.Current.Lights.Ambient = Color4.Brown;
+            Scene.CurrentCam.Position = new Position(0,0, 10);
+            Camera3D.Target = new Position(0);
 
-            Scene.CurrentCam.Position = new Position(0,3,5);
-            ((Camera3D)Scene.CurrentCam).Target = new Position(2.5f, 2.5f, 0);
-            ((Camera3D) Scene.CurrentCam).UseTarget = true;
-            Scene.Current.AddRange(obj, obj2);
+            Scene.Current.Lights.Add(spotlight);
+            Scene.Current.AddRange(obj);
+        }
+
+        static void Test2D()
+        {
+            Scene.ChangeScene(Scene.Create2DScene());
+            Camera2D = (OrthographicCamera)Scene.CurrentCam;
+
+            int MoveSpeed = 30;
+            KeybindCollection.AutoCheckKeybindCollections.Add(new KeybindCollection()
+            {
+                new Keybind(a => Scene.CurrentCam.Position.X += MoveSpeed * (float)SMGlobals.UpdateDeltatime, Key.D),
+                new Keybind(a => Scene.CurrentCam.Position.X -= MoveSpeed * (float)SMGlobals.UpdateDeltatime, Key.A),
+                new Keybind(a => Scene.CurrentCam.Position.Y += MoveSpeed * (float)SMGlobals.UpdateDeltatime, Key.Space),
+                new Keybind(a => Scene.CurrentCam.Position.Y -= MoveSpeed * (float)SMGlobals.UpdateDeltatime, Key.ControlLeft),
+                new Keybind(a => {
+                    Console.Write("Pause");
+                }, Key.P)
+            });
+            OrthographicCamera.HeightScale = 1000;
+            SMGlobals.DefaultModel = Meshes.Plane;
+
+            Scene.Current.Lights.Ambient = Color4.White;
+
+            obj = new DrawObject()
+            {
+                Size = Size.Uniform2D(50),
+                Mesh = AxisHelper.Object
+            };
+
+            Scene.Current.AddRange(obj);
         }
     }
 }

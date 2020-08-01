@@ -48,6 +48,7 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -65,17 +66,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SMRenderer\SMRenderer.Core\SMRenderer.Core.csproj">
+    <ProjectReference Include="..\SMRenderer\SM.Core\SM.Core.csproj">
       <Project>{1d351cc8-d673-49e9-a016-7aa435531743}</Project>
-      <Name>SMRenderer.Core</Name>
+      <Name>SM.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SMRenderer\SMRenderer.PostProcessing\SMRenderer.PostProcessing.csproj">
-      <Project>{a827bca6-7175-4947-b23d-75bcef50795d}</Project>
-      <Name>SMRenderer.PostProcessing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SMRenderer\SMRenderer\SMRenderer.csproj">
-      <Project>{53081c3e-ccae-45d4-bee9-1d8f3bd1bbc4}</Project>
-      <Name>SMRenderer</Name>
+    <ProjectReference Include="..\SMRenderer\SM\SM.csproj">
+      <Project>{ed316d46-fab5-4996-9012-e8304f73bd18}</Project>
+      <Name>SM</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
