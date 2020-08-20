@@ -1,4 +1,6 @@
 ﻿using OpenTK;
+using SM.Data.Types;
+using SM.Data.Types.Extensions;
 using SM.Data.Types.VectorTypes;
 
 namespace SM.Scene.Draw.Base
@@ -7,15 +9,15 @@ namespace SM.Scene.Draw.Base
     {
         public override Matrix4 ModelMatrix { get; set; }
 
-        public Position Position = new Position();
-        public Size Size = new Size();
-        public Rotation Rotation = new Rotation();
+        public Vector Position = new Vector();
+        public Vector Size = new Vector(1);
+        public Vector Rotation = new Vector();
 
         public override void Prepare(double delta)
         {
             ModelMatrix = CalcMatrix();
         }
 
-        public Matrix4 CalcMatrix() => (Matrix4) Size * Rotation * Position;
+        public Matrix4 CalcMatrix() => MatrixCalc.CreateModelMatrix(Size, Rotation, Position);
     }
 }

@@ -10,15 +10,15 @@ namespace SM.Data.Models
     [Serializable]
     public class Material
     {
-        public bool HasDiffuseTexture => DiffuseTexture != null;
+        public bool HasTexture => Texture != null;
         public bool HasSpecularTexture => SpecularTexture != null;
         public bool HasNormalMap => NormalMap != null;
 
-        public Color DiffuseColor = Color4.White;
+        public Color Color = Color4.White;
         public Color SpecularColor = Color4.White;
         public float Shininess = 32;
 
-        public TextureBase DiffuseTexture;
+        public TextureBase Texture;
         public TextureBase SpecularTexture;
         public TextureBase NormalMap;
 

@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using SM.Data.Types;
 using SM.Data.Types.VectorTypes;
 
 namespace SM.Scene.Cameras
@@ -9,8 +10,8 @@ namespace SM.Scene.Cameras
         public static Matrix4 PerspectiveWorld;
 
         public abstract bool Orth { get; }
-        public virtual Position Position { get; set; } = new Position(0,0,0);
-        public virtual Position Front { get; set; } = new Position(z: 1);
+        public virtual Vector Position { get; set; } = new Vector(0,0,0);
+        public virtual Vector Front { get; set; } = new Vector(z: 1);
         public Matrix4 ViewMatrix { get; private set; }
 
         public Matrix4 WorldViewProjection => (Orth ? OrthographicWorld : PerspectiveWorld) * ViewMatrix;

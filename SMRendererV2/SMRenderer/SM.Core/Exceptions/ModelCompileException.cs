@@ -2,6 +2,9 @@
 
 namespace SM.Core.Exceptions
 {
+    /// <summary>
+    /// This exception only happens when something when wrong while a model was compiling.
+    /// </summary>
     public class ModelCompileException : LogException
     {
         /// <inheritdoc />

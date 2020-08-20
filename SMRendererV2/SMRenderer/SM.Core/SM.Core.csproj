@@ -41,7 +41,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
@@ -70,7 +69,6 @@
     <Compile Include="TextureBase.cs" />
     <Compile Include="Timer.cs" />
     <Compile Include="Window\Aspect.cs" />
-    <Compile Include="Window\GLInformation.cs" />
     <Compile Include="Window\GLWindow.cs" />
     <Compile Include="Window\WindowSettings.cs" />
     <Compile Include="Enums\WindowUsage.cs" />

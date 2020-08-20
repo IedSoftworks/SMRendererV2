@@ -4,30 +4,58 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 using SM.Core.Enums;
 using SM.Core.Exceptions;
 using SM.Core.Plugin;
+using SM.Core.Renderer;
 using SM.Core.Renderer.Framebuffers;
 
 namespace SM.Core.Window
 {
-    /// <include file='Window.docu' path='Documentation/GLWindow/Class'/>
     public class GLWindow : GameWindow
     {
         #region Fields
+
+        /// <summary>
+        /// This contains all renderers that needs to load.
+        /// </summary>
+        private List<GenericRenderer> _renderers = new List<GenericRenderer>();
+        /// <summary>
+        /// This contains all framebuffer that needs to load.
+        /// </summary>
+        private List<Framebuffer> _framebuffers = new List<Framebuffer>();
+
+        /// <summary>
+        /// This contains the currently running window.
+        /// </summary>
         public static GLWindow Window;
         
+        /// <summary>
+        /// This contains all settings for the window.
+        /// </summary>
         public WindowSettings Settings;
-        public GLInformation GLInformation;
+        /// <summary>
+        /// This contains all plugins loaded.
+        /// </summary>
         public Dictionary<Type, WindowPlugin> LoadedPlugins = new Dictionary<Type, WindowPlugin>();
 
+        /// <summary>
+        /// This contains the currently active aspect ratio.
+        /// </summary>
         public Aspect Aspect = new Aspect();
-
-        public bool DisableAutoDrawing = false;
-
+        /// <summary>
+        /// Unfocused updates means, that the window keeps updating and rendering, even if the window isn't in focus.
+        /// <para>Default: false</para>
+        /// </summary>
         public bool AllowUnfocusedUpdates = false;
+        /// <summary>
+        /// This sets the background color of the window
+        /// <para>Default: Black</para>
+        /// </summary>
+        public Color4 BackgroundColor = Color4.Black;
 
         #endregion
 
@@ -47,7 +75,11 @@ namespace SM.Core.Window
 
         #region Constructor
 
-        public GLWindow(WindowSettings settings, GLInformation glInformation) : base(settings.Width, settings.Height, settings.GraphicsMode, settings.Title, settings.Options, settings.Device, settings.MajorVersion, settings.MinorVersion, settings.Flags, settings.SharedContext, settings.SingleThread)
+        /// <summary>
+        /// This creates a new window with specific settings.
+        /// </summary>
+        /// <param name="settings">The settings</param>
+        public GLWindow(WindowSettings settings) : base(settings.Width, settings.Height, settings.GraphicsMode, settings.Title, settings.Options, settings.Device, settings.MajorVersion, settings.MinorVersion, settings.Flags, settings.SharedContext, settings.SingleThread)
         {
             X = settings.X;
             Y = settings.Y;
@@ -56,7 +88,6 @@ namespace SM.Core.Window
             VSync = settings.VSync;
 
             Settings = settings;
-            GLInformation = glInformation;
         }
 
         #endregion
@@ -68,7 +99,7 @@ namespace SM.Core.Window
         {
             Log.Write("#", "--- Initilize OpenGL ---",
                 "    VSync: " + Settings.VSync, 
-                "    Required OGL Version: " + Settings.MinorVersion,
+                $"    Required OGL Version: {Settings.MajorVersion}.{Settings.MinorVersion}",
                 "    OpenGL Version: "+GL.GetString(StringName.Version),
                 "    GLSL Version: "+GL.GetString(StringName.ShadingLanguageVersion));
             if (GLDebug.AdvDebugging)
@@ -80,7 +111,7 @@ namespace SM.Core.Window
 
             Window = this;
 
-            GLInformation.Renderers.ForEach(a => a.Compile() );
+            _renderers.ForEach(a => a.Compile() );
 
             _load?.Invoke(e, this);
             
@@ -92,16 +123,15 @@ namespace SM.Core.Window
         /// <inheritdoc />
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            if (WindowState == WindowState.Minimized) return;
+            if (!Focused && !AllowUnfocusedUpdates || WindowState == WindowState.Minimized) return;
 
             _beforeRender?.Invoke(e, this);
 
-            (DisableAutoDrawing ? Framebuffer.MainFramebuffer : Framebuffer.ScreenFramebuffer).Activate();
             _render?.Invoke(e, this);
+            base.OnRenderFrame(e);
 
             _afterRender?.Invoke(e, this);
             SwapBuffers();
-            base.OnRenderFrame(e);
         }
 
         /// <inheritdoc />
@@ -112,7 +142,6 @@ namespace SM.Core.Window
             base.OnUpdateFrame(e);
             _beforeUpdate?.Invoke(e, this);
 
-            Timer.RunTick(e.Time);
             _update?.Invoke(e, this);
             
             _afterUpdate?.Invoke(e, this);
@@ -122,10 +151,10 @@ namespace SM.Core.Window
         /// <inheritdoc />
         protected override void OnResize(EventArgs e)
         {
-            if (WindowState == WindowState.Minimized) return;
+            if (!Focused || WindowState == WindowState.Minimized) return;
             base.OnResize(e);
 
-            Aspect.Recalulate(Width, Height);
+            Aspect.Recalculate(Width, Height);
 
             GL.Viewport(ClientRectangle);
 
@@ -150,6 +179,49 @@ namespace SM.Core.Window
         #endregion
 
         #region Instance Methods
+        /// <summary>
+        /// Applies window plugins, by selecting one Usage, and selecting multiple plugins.
+        /// </summary>
+        /// <param name="usage">Usage allowence</param>
+        /// <param name="types">Plugins</param>
+        /// <returns>The GLWindow</returns>
+        public GLWindow Use(WindowUsage usage, params WindowPlugin[] types)
+        {
+            return Use(usage, false, types);
+        }
+        /// <summary>
+        /// Applies window plugins, by setting for each plugin the usage allowence.
+        /// </summary>
+        /// <param name="types">The list of plugins</param>
+        /// <param name="ignoreRequired">This overrides every requirements set by the plugins.</param>
+        /// <returns></returns>
+        public GLWindow Use(KeyValuePair<WindowPlugin, WindowUsage>[] types, bool ignoreRequired = false)
+        {
+            foreach (KeyValuePair<WindowPlugin, WindowUsage> type in types)
+                Use(type.Key, type.Value, ignoreRequired);
+
+            return this;
+        }
+        /// <summary>
+        /// Applies window plugins, by selecting one Usage, and selecting multiple plugins.
+        /// </summary>
+        /// <param name="usage">Usage allowence</param>
+        /// <param name="ignoreRequired">This overrides every requirements set by the plugins.</param>
+        /// <param name="types">Plugins</param>
+        /// <returns>The GLWindow</returns>
+        public GLWindow Use(WindowUsage usage, bool ignoreRequired, params WindowPlugin[] types)
+        {
+            foreach (WindowPlugin type in types) Use(type, usage, ignoreRequired);
+            return this;
+        }
+
+        /// <summary>
+        /// Applies a plugin.
+        /// </summary>
+        /// <param name="plugin">The plugin</param>
+        /// <param name="usage"></param>
+        /// <param name="ignoreRequired">This overrides every requirements set by the plugins.</param>
+        /// <returns></returns>
         public GLWindow Use(WindowPlugin plugin, WindowUsage usage, bool ignoreRequired = false)
         {
             if (LoadedPlugins.ContainsKey(plugin.GetType()))
@@ -189,10 +261,10 @@ namespace SM.Core.Window
                         break;
 
                     case WindowUsage.AddRenderer:
-                        if (plugin.Renderers != null) GLInformation.Renderers.AddRange(plugin.Renderers);
+                        if (plugin.Renderers != null) _renderers.AddRange(plugin.Renderers);
                         break;
                     case WindowUsage.AddFramebuffers:
-                        if (plugin.Framebuffers != null) GLInformation.Framebuffers.AddRange(plugin.Framebuffers);
+                        if (plugin.Framebuffers != null) _framebuffers.AddRange(plugin.Framebuffers);
                         break;
                 }
             }
@@ -204,38 +276,39 @@ namespace SM.Core.Window
 
             return this;
         }
-        public GLWindow Use(WindowUsage usage, bool ignoreRequired, params WindowPlugin[] types)
-        {
-            foreach (WindowPlugin type in types) Use(type, usage, ignoreRequired);
-            return this;
-        }
-        public GLWindow Use(WindowUsage usage, params WindowPlugin[] types)
-        {
-            return Use(usage, false, types);
-        }
-        public GLWindow Use(KeyValuePair<WindowPlugin, WindowUsage>[] types, bool ignoreRequired = false)
-        {
-            foreach (KeyValuePair<WindowPlugin, WindowUsage> type in types)
-                Use(type.Key, type.Value, ignoreRequired);
 
-            return this;
-        }
-
+        /// <summary>
+        /// This completely reloads the window.
+        /// </summary>
         public virtual void Reload()
         {
-            GLInformation.Renderers.ForEach(a => GL.DeleteProgram(a));
+            _renderers.ForEach(a => GL.DeleteProgram(a));
 
             OnLoad(new EventArgs());
             OnResize(new EventArgs());
         }
 
+        /// <summary>
+        /// This takes a screenshot of the current visible area of the window.
+        /// </summary>
         public Bitmap TakeScreenshot()  => TakeScreenshot(Width, Height);
 
+        /// <summary>
+        /// This takes a screenshot of a specific width and height.
+        /// </summary>
         public Bitmap TakeScreenshot(int width, int height) => TakeScreenshot(0, 0, width, height);
 
-        public Bitmap TakeScreenshot(int x, int y, int width, int height)
+        /// <summary>
+        /// This takes a screenshot of a specifc area inside the screen.
+        /// </summary>
+        public Bitmap TakeScreenshot(int x, int y, int width, int height) =>
+            TakeScreenshot(Framebuffer.ScreenFramebuffer, ReadBufferMode.Front, x, y, width, height);
+
+        /// <summary>
+        /// This takes a screenshot of a specifc area inside the selected framebuffer.
+        /// </summary>
+        public Bitmap TakeScreenshot(Framebuffer framebuffer, ReadBufferMode readBuffer,  int x, int y, int width, int height)
         {
-            // Merke dir, welche Framebuffer-IDs gerade gebunden waren...
             GL.GetInteger(GetPName.FramebufferBinding, out int prevFBId);
             GL.GetInteger(GetPName.DrawFramebufferBinding, out int prevFBDrawId);
             GL.GetInteger(GetPName.ReadFramebufferBinding, out int prevFBReadId);
@@ -244,15 +317,14 @@ namespace SM.Core.Window
             System.Drawing.Imaging.BitmapData bits = b.LockBits(new Rectangle(0, 0, width, height),
                 System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
-            GL.ReadBuffer(ReadBufferMode.Front);
+            GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, framebuffer);
+            GL.ReadBuffer(readBuffer);
             GL.ReadPixels(x, y, width, height, OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte,
                 bits.Scan0);
 
             b.UnlockBits(bits);
             b.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
-            // ...stelle ursprüngliches Binding wieder her:
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, prevFBId);
             GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, prevFBDrawId);
             GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, prevFBReadId);
@@ -266,14 +338,14 @@ namespace SM.Core.Window
 
         private void InitilizeFramebuffers()
         {
-            GLInformation.Framebuffers.ForEach(a => a.Dispose());
+            _framebuffers.ForEach(a => a.Dispose());
 
             // Sometimes, frame buffer initialization fails
             // if the Window gets resized too often.
             // I found no better way around this:
             Thread.Sleep(50);
 
-            GLInformation.Framebuffers.ForEach(a => a.Initilize());
+            _framebuffers.ForEach(a => a.Initialize());
         }
 
         #endregion

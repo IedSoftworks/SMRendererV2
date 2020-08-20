@@ -4,7 +4,7 @@ using OpenTK.Graphics;
 namespace SM.Data.Types.VectorTypes
 {
     [Serializable]
-    public class Color : AnimatableType
+    public class Color : Vector
     {
         public float R
         {

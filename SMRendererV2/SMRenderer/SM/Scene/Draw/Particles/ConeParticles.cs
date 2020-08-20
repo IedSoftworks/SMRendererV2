@@ -1,5 +1,7 @@
 ﻿using OpenTK;
+using SM.Data.Types;
 using SM.Data.Types.VectorTypes;
+using SM.Utility;
 
 namespace SM.Scene.Draw.Particles
 {
@@ -7,9 +9,9 @@ namespace SM.Scene.Draw.Particles
     {
         public Vector2 Cone = Vector2.One;
 
-        public override Direction MotionAlgorithm(int index)
+        public override Vector MotionAlgorithm(int index)
         {
-            return new Direction((float)SMGlobals.Randomizer.NextDouble() * (Cone.X * 2) - Cone.X, 1f, (float)SMGlobals.Randomizer.NextDouble() * (Cone.Y * 2) - Cone.Y);
+            return new Vector(Randomize.GetFloat(Cone.X, Cone.X * 2), 1f, Randomize.GetFloat(Cone.Y, Cone.Y * 2));
         }
     }
 }

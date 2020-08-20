@@ -2,6 +2,9 @@
 
 namespace SM.Core.Exceptions
 {
+    /// <summary>
+    /// This exception is thrown, if a window plugin causes a error.
+    /// </summary>
     public class WindowUseException : LogException
     {
         /// <inheritdoc />

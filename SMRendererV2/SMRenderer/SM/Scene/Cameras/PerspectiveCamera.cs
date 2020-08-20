@@ -2,6 +2,7 @@
 using OpenTK;
 using SM.Core.Window;
 using SM.Data.Types;
+using SM.Data.Types.Extensions;
 using SM.Data.Types.VectorTypes;
 
 namespace SM.Scene.Cameras
@@ -25,16 +26,19 @@ namespace SM.Scene.Cameras
 
         public override bool Orth { get; } = false;
 
-        public Position Target = null;
-        public Rotation Rotation = null;
+        public Vector Target = null;
+        public Vector Rotation = null;
 
         internal override OpenTK.Matrix4 CalcMatrix()
         {
             if (Target != null)
-                Front = VectorType.Normalize<Position>(Target - Position);
+            {
+                Front = (Target - Position);
+                Front.Normalize();
+            }
             else if (Rotation != null)
             {
-                Vector3 radians = Rotation.Radians;
+                Vector3 radians = Rotation.GetRadians();
 
                 Front.X = (float) (Math.Cos(radians.X) * Math.Cos(radians.Y));
                 Front.Y = (float) (Math.Sin(radians.Y));

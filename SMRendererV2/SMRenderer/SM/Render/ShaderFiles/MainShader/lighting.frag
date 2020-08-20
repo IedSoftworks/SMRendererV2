@@ -52,7 +52,7 @@ in mat3 vTBN;
 
 out vec4 color;
 
-uniform vec3 AmbientLight;
+uniform float AmbientLight;
 uniform Light[MAX_LIGHTS] Lights;
 uniform int UsedLights;
 uniform vec3 ViewPosition;
@@ -144,9 +144,10 @@ vec3 CalcLight() {
 	return result;
 }
 
-void main() {
+void CalculateLighting() {
 	if (material.UseLight) {
 		LightOutput = CalcLight();
-		color.xyz *= AmbientLight + LightOutput;
+		color.xyz *= AmbientLight;
+		color.xyz += LightOutput;
 	}
 }

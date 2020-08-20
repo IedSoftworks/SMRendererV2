@@ -40,7 +40,9 @@ namespace SM.Render.ShaderPrograms
 
             U["HasColors"]?.SetUniform1(particleObject.Mesh.VertexColors.HadContent);
             U["Fade"]?.SetUniform1(particleObject.Fade);
+            
             ShaderCatalog.SetMainFragmentUniforms(U, particleObject.Material);
+            Scene.Scene.Current.Lights.SetUniforms(U);
 
             GL.BindVertexArray(particleObject.Mesh.VAO); 
             int modelLocation = U["Matrices"].Value;
@@ -49,7 +51,7 @@ namespace SM.Render.ShaderPrograms
             {
                 var currentLocationAdd = i % DrawCallAmount;
                 if (currentLocationAdd == 0 && i != 0)
-                    GL.DrawArraysInstanced(particleObject.Mesh.PrimitiveType, 0, particleObject.Mesh.Vertices.Count, DrawCallAmount);
+                    DrawObject(particleObject.Mesh, DrawCallAmount);
 
 
                 Matrix4 matrix = particleObject.MoveAction(particleObject.ParticleObject, para, particleObject);
@@ -59,7 +61,7 @@ namespace SM.Render.ShaderPrograms
                 i++;
             }
 
-            GL.DrawArraysInstanced(particleObject.Mesh.PrimitiveType, 0, particleObject.Mesh.Vertices.Count, i);
+            DrawObject(particleObject.Mesh, i);
 
             particleObject.Material.Modifiers.ForEach(a => a.ClearUniforms(U));
             CleanUp();

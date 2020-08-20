@@ -111,7 +111,7 @@ namespace SM.Scene.Draw
                 collection.Add(obj);
             }
 
-            return Unsafe.As<SMItemCollection, T>(ref collection);
+            return (T)collection;
         }
     }
 }

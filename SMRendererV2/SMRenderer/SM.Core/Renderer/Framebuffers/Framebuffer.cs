@@ -5,34 +5,71 @@ using SM.Core.Window;
 
 namespace SM.Core.Renderer.Framebuffers
 {
+    /// <summary>
+    /// Represents a OpenGL framebuffer
+    /// </summary>
     public class Framebuffer : IGLObject
     {
+        /// <summary>
+        /// Contains the screen framebuffer.
+        /// </summary>
         public static Framebuffer ScreenFramebuffer { get; } = new Framebuffer { ID = 0 };
+        /// <summary>
+        /// Contains the main framebuffer.
+        /// </summary>
         public static Framebuffer MainFramebuffer = ScreenFramebuffer;
+        /// <summary>
+        /// Contains the currently active framebuffer.
+        /// </summary>
         public static Framebuffer ActiveFramebuffer { get; internal set; } = MainFramebuffer;
 
+        /// <inheritdoc />
         public int ID { get; set; }
+
+        /// <inheritdoc />
         public ObjectLabelIdentifier Identifier { get; set; } = ObjectLabelIdentifier.Framebuffer;
 
+        /// <summary>
+        /// Contains all color attachments.
+        /// </summary>
         public ColorAttachmentCollection ColorAttachments { get; private set; } = new ColorAttachmentCollection();
 
+        /// <summary>
+        /// Represents the window the framebuffer is attached to.
+        /// </summary>
         public GLWindow Window { get; private set; }
 
+        /// <summary>
+        /// Creates a empty framebuffer
+        /// </summary>
         public Framebuffer()
         { }
 
+        /// <summary>
+        /// Creates a framebuffer with color attachments.
+        /// <para>The window is selected over the 'GLWindow.Window'</para>
+        /// </summary>
+        /// <param name="colorAttachments">The color attachments</param>
         public Framebuffer(ColorAttachmentCollection colorAttachments)
         {
             ColorAttachments = colorAttachments;
             Window = GLWindow.Window;
         }
+        /// <summary>
+        /// Creates a framebuffer with color attachments and window.
+        /// </summary>
+        /// <param name="colorAttachments">The color attachments</param>
+        /// <param name="window">The window</param>
         public Framebuffer(ColorAttachmentCollection colorAttachments, GLWindow window)
         {
             ColorAttachments = colorAttachments;
             Window = window;
         }
 
-        public virtual void Initilize()
+        /// <summary>
+        /// Initialize the framebuffer
+        /// </summary>
+        public virtual void Initialize()
         {
             if (Window == null)
                 Window = GLWindow.Window;
@@ -71,6 +108,11 @@ namespace SM.Core.Renderer.Framebuffers
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 
+        /// <summary>
+        /// Activates the framebuffer
+        /// </summary>
+        /// <param name="glBinding">Bind the framebuffer to OpenGL</param>
+        /// <param name="clear">Clear the framebuffer</param>
         public virtual void Activate(bool glBinding = true, bool clear = false)
         {
             if (glBinding) GL.BindFramebuffer(FramebufferTarget.Framebuffer, ID);
@@ -78,18 +120,28 @@ namespace SM.Core.Renderer.Framebuffers
             ActiveFramebuffer = this;
         }
 
+        /// <summary>
+        /// Adds attachments.
+        /// </summary>
+        /// <param name="variableNames">Names for the variables</param>
         public void AddAttachment(params string[] variableNames)
         {
             ColorAttachments.Add(variableNames);
         }
 
-
+        /// <summary>
+        /// Disposes the framebuffer.
+        /// </summary>
         public virtual void Dispose()
         {
             ColorAttachments.ForEach(a => GL.DeleteTexture(a));
             GL.DeleteFramebuffer(this);
         }
-
+        
+        /// <summary>
+        /// Returns the framebuffer ID
+        /// </summary>
+        /// <param name="f"></param>
         public static implicit operator int(Framebuffer f) => f.ID;
     }
 }

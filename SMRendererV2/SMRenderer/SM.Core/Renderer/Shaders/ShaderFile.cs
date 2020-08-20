@@ -9,52 +9,80 @@ using ShaderType = OpenTK.Graphics.OpenGL4.ShaderType;
 namespace SM.Core.Renderer.Shaders
 {
 
+    /// <summary>
+    /// Represents a shader file
+    /// </summary>
     [Serializable]
     public class ShaderFile : IGLObject
     {
+        /// <inheritdoc />
         public ObjectLabelIdentifier Identifier { get; set; } = ObjectLabelIdentifier.Shader;
+
+        /// <inheritdoc />
         public int ID { get; set; } = -1;
 
-        public List<ShaderFile> Extentions = new List<ShaderFile>();
+        /// <summary>
+        /// Extensions, that is added to the file.
+        /// </summary>
+        public List<ShaderFile> Extensions = new List<ShaderFile>();
+        /// <summary>
+        /// String extensions, that only replace specific pre-defined keywords.
+        /// </summary>
         public Dictionary<string, string> StringExtention = new Dictionary<string, string>();
 
+        /// <summary>
+        /// The original file content.
+        /// </summary>
         public string FileContent;
 
+        /// <summary>
+        /// The resulting shader program, after adding all extensions.
+        /// </summary>
         public string ShaderData { get; private set; } = "";
 
+        /// <summary>
+        /// Creates a shader file.
+        /// </summary>
+        /// <param name="content">The original file content</param>
         public ShaderFile(string content)
         {
             FileContent = content;
         }
+        /// <summary>
+        /// Create a shader file, together with some string extensions.
+        /// </summary>
+        /// <param name="content">The original file</param>
+        /// <param name="overrides">The string extensions</param>
         public ShaderFile(string content, Dictionary<string, string> overrides)
         {
             FileContent = content;
             StringExtention = overrides;
         }
 
-        public string GetData(bool askedFromShader = false)
+        /// <summary>
+        /// Applies all extensions to the original file.
+        /// </summary>
+        /// <returns>The resulting file</returns>
+        public string GetData()
         {
             if (ShaderData != "") return ShaderData;
 
             string storedContent = FileContent;
 
             // Insert extentions
-            foreach (ShaderFile extention in Extentions)
+            foreach (ShaderFile extention in Extensions)
             {
                 storedContent = storedContent.Insert(storedContent.IndexOf("void main()"), extention.GetData()+"\r\n");
             }
 
             // go though the data, remove duplicates and save it. 
             bool structure = false;
-            bool hasEndFunction = false;
             int force = 0;
             string[] ignoreLines = new[] {"}", "};"};
             string[] lines = storedContent.Split(new[] {"\r\n"}, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (string line in storedContent.Split(new [] {"\r\n"}, StringSplitOptions.RemoveEmptyEntries))
             {
-                if (line.StartsWith("void end()")) hasEndFunction = true;
-
                 if (structure && line.StartsWith("}"))
                 {
                     structure = false;
@@ -87,7 +115,7 @@ namespace SM.Core.Renderer.Shaders
                 storedContent = storedContent.Remove(start - 13, storedContent.Length - (start - 13));
             }
 
-            ShaderData += endMain + (askedFromShader && hasEndFunction ? "end();" : "")+ "}";
+            ShaderData += endMain + "}";
 
             // Insert StringExtentions
             foreach (KeyValuePair<string, string> pair in StringExtention)
@@ -98,11 +126,17 @@ namespace SM.Core.Renderer.Shaders
             return ShaderData;
         }
 
+        /// <summary>
+        /// Loading shader into the GPU
+        /// </summary>
+        /// <param name="programID">The programID</param>
+        /// <param name="type">The type</param>
+        /// <param name="renderer">The renderer that asked. (If set a debug-file is created)</param>
         internal void Load(int programID, ShaderType type, GenericRenderer renderer)
         {
             if (ID < 0)
             {
-                string data = GetData(true);
+                string data = GetData();
                 File.WriteAllText($"SHADER_{renderer.GetType().Name}_{type}.txt", data);
 
                 ID = GL.CreateShader(type);
@@ -111,7 +145,11 @@ namespace SM.Core.Renderer.Shaders
             }
             GL.AttachShader(programID, ID);
         }
-
+        /// <summary>
+        /// Loading shader into the GPU
+        /// </summary>
+        /// <param name="programID">The programID</param>
+        /// <param name="type">The type</param>
         internal void Load(int programID, ShaderType type)
         {
             if (ID < 0)

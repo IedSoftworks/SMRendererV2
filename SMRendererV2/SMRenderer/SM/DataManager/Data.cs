@@ -40,7 +40,7 @@ namespace SM.DataManager
 
         public T GetStoredData<T>()
         {
-            return Unsafe.As<object, T>(ref _storedData);
+            return (T)_storedData;
         }
     }
 }

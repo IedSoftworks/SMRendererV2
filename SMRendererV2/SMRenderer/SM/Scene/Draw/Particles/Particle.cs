@@ -1,13 +1,14 @@
 ﻿using OpenTK;
+using SM.Data.Types;
 using SM.Data.Types.VectorTypes;
 
 namespace SM.Scene.Draw.Particles
 {
     public struct Particle
     {
-        public Direction Direction;
+        public Vector Direction;
         
-        public Size Size;
+        public Vector Size;
         public Quaternion Rotation;
     }
 }

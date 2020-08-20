@@ -1,4 +1,5 @@
 ﻿using SM.Core.Renderer;
+using SM.Data.Types;
 using SM.Data.Types.VectorTypes;
 
 namespace SM.Scene.Lights
@@ -7,13 +8,13 @@ namespace SM.Scene.Lights
     {
         public override LightType Type { get; set; } = LightType.Point;
 
-        public Position Position;
+        public Vector Position;
 
         public float Constant = 1f;
         public float Linear = 0.7f;
         public float Quadratic = 1.8f;
 
-        public PointLight(Position position)
+        public PointLight(Vector position)
         {
             Position = position;
         }

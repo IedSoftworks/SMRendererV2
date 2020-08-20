@@ -20,7 +20,7 @@ namespace SM
             
             // Load and insert default meshes into the file
             DataCollection meshCollection = dataFile.Add("Meshes");
-            ImportedMesh[] meshes = Importer.ImportMeshes("SMDefaultObjects.glb", true, ModelImportOptions.None, PostProcessSteps.CalculateTangentSpace | PostProcessSteps.FlipUVs);
+            ImportedMesh[] meshes = Importer.ImportMeshes("SMDefaultObjects.glb", true, PostProcessSteps.CalculateTangentSpace | PostProcessSteps.FlipUVs);
             foreach (ImportedMesh mesh in meshes) meshCollection.Add(mesh.Name, mesh);
 
             dataFile.Save(@"..\..\..\SMRenderer\SM\Default.smd");

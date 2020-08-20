@@ -22,7 +22,7 @@ namespace SM.Controls
             Aspect aspect = GLWindow.Window.Aspect;
             Vector2 res = aspect.ScaledResolution;
 
-            return MouseInScreenNormalized * (res * 2) - res + cam.Position;
+            return MouseInScreenNormalized * (res * 2) - res + (Vector2)cam.Position;
         }
         public static Vector3 GetMouseIn3DWorld(SMItemCollection objects, out IShowObject selectedObject)
         {

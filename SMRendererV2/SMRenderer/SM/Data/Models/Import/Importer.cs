@@ -22,49 +22,32 @@ namespace SM.Data.Models.Import
 
         static readonly AssimpContext importer = new AssimpContext();
 
-        public static ImportedMesh[] ImportMeshes(string path, bool relative = true,
-            ModelImportOptions options = ModelImportOptions.Default, PostProcessSteps postProcess = PostProcessSteps.None)
+        public static ImportedMesh[] ImportMeshes(string path, bool relative = true, PostProcessSteps postProcess = PostProcessSteps.None)
         {
             if (relative) path = Path.Combine(Path.GetDirectoryName(Assembly.GetCallingAssembly().Location), path);
 
-            if ((options & ModelImportOptions.DefaultModelLoadPostProcessing) != 0 && postProcess == PostProcessSteps.None)
+            if (postProcess == PostProcessSteps.None)
             {
                 postProcess = PostProcessSteps.GenerateUVCoords | PostProcessSteps.Triangulate |
                               PostProcessSteps.CalculateTangentSpace;
             }
 
-            return ImportMeshes(importer.ImportFile(path, postProcess), options);
+            return ImportMeshes(importer.ImportFile(path, postProcess));
         }
 
-        public static ImportedMesh[] ImportMeshes(Stream stream,
-            ModelImportOptions options = ModelImportOptions.Default, PostProcessSteps postProcess = PostProcessSteps.None)
+        public static ImportedMesh[] ImportMeshes(Stream stream, PostProcessSteps postProcess = PostProcessSteps.None)
         {
-            if ((options & ModelImportOptions.DefaultModelLoadPostProcessing) != 0 && postProcess == PostProcessSteps.None)
+            if (postProcess == PostProcessSteps.None)
             {
                 postProcess = PostProcessSteps.GenerateUVCoords | PostProcessSteps.Triangulate | 
                               PostProcessSteps.CalculateTangentSpace;
             }
 
-            return ImportMeshes(importer.ImportFileFromStream(stream, postProcess), options);
+            return ImportMeshes(importer.ImportFileFromStream(stream, postProcess));
         }
 
-        public static ImportedMesh[] ImportMeshes(Assimp.Scene root, ModelImportOptions options)
+        public static ImportedMesh[] ImportMeshes(Assimp.Scene root)
         {
-            Dictionary<int, Material> materials = new Dictionary<int, Material>();
-            if ((options & ModelImportOptions.SaveMaterial) != 0)
-            {
-                for (int i = 0; i < root.MaterialCount; i++)
-                {
-                    Material material = new Material();
-                    materials.Add(i, material);
-
-                    Assimp.Material mat = root.Materials[i];
-
-                    if (mat.HasColorDiffuse) material.DiffuseColor = new Color4(mat.ColorDiffuse.R, mat.ColorDiffuse.G, mat.ColorDiffuse.B, mat.ColorDiffuse.A);
-                    if (mat.HasTextureDiffuse) material.DiffuseTexture = new Texture(new Bitmap(mat.TextureDiffuse.FilePath), TextureMinFilter.Linear, OpenTK.Graphics.OpenGL4.TextureWrapMode.ClampToEdge);
-                }
-            }
-
             ImportedMesh[] meshes = new ImportedMesh[root.MeshCount];
             for (int i = 0; i < root.MeshCount; i++)
             {
@@ -73,44 +56,33 @@ namespace SM.Data.Models.Import
 
                 currentMesh.Name = mesh.Name;
                 currentMesh.PrimitiveType = primitiveTypes[mesh.PrimitiveType];
-
-                foreach (int faceIndex in mesh.Faces.Where(face => face.HasIndices).SelectMany(face => face.Indices))
+                if (mesh.HasVertices)
                 {
-                    if (mesh.HasVertices)
-                    {
-                        Vector3D vector = mesh.Vertices[faceIndex];
-                        currentMesh.Vertices.Add(vector.X, vector.Y, vector.Z);
-                    }
-
-                    if (mesh.HasNormals)
-                    {
-                        Vector3D normal = mesh.Normals[faceIndex];
-                        currentMesh.Normals.Add(normal.X, normal.Y, normal.Z);
-                    }
-
-                    if (mesh.HasTextureCoords(0))
-                    {
-                        Vector3D texCoord = mesh.TextureCoordinateChannels[0][faceIndex];
-                        currentMesh.UVs.Add(texCoord.X, texCoord.Y);
-                    }
-
-                    if (mesh.HasVertexColors(0))
-                    {
-                        Color4D vertexColor = mesh.VertexColorChannels[0][faceIndex];
-                        currentMesh.VertexColors.Add(vertexColor.R, vertexColor.G, vertexColor.B, vertexColor.A);
-                    }
-
-                    if (mesh.HasTangentBasis)
-                    {
-                        Vector3D tangent = mesh.Tangents[faceIndex];
-                        currentMesh.Tangents.Add(tangent.X, tangent.Y, tangent.Z);
-                    }
+                    mesh.Vertices.ForEach(vector => currentMesh.Vertices.Add(vector.X, vector.Y, vector.Z));
                 }
 
-                if ((options & ModelImportOptions.SaveMaterial) != 0)
+                if (mesh.HasNormals)
                 {
-                    currentMesh.ImportedMaterial = materials[mesh.MaterialIndex];
+                    mesh.Normals.ForEach(vector => currentMesh.Normals.Add(vector.X, vector.Y, vector.Z));
                 }
+
+                if (mesh.HasTextureCoords(0))
+                {
+                    mesh.TextureCoordinateChannels[0].ForEach(vector => currentMesh.UVs.Add(vector.X, vector.Y));
+                }
+
+                if (mesh.HasVertexColors(0))
+                {
+                    mesh.VertexColorChannels[0].ForEach(vector =>
+                        currentMesh.VertexColors.Add(vector.R, vector.G, vector.B, vector.A));
+                }
+
+                if (mesh.HasTangentBasis)
+                {
+                    mesh.Tangents.ForEach(vector => currentMesh.Tangents.Add(vector.X, vector.Y, vector.Z));
+                }
+
+                currentMesh.Indices = mesh.GetIndices();
             }
 
             return meshes;

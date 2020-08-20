@@ -13,23 +13,16 @@ out vec3 vPosition;
 out vec4 vColor;
 out mat3 vTBN;
 
-uniform mat4 projection;
-uniform mat4 view;
+uniform mat4 projectView;
 uniform mat4[MAX_CALLPARAMETERS] model;
 
 uniform bool HasColors;
-
-uniform mat4 masterMatrix;
-uniform bool HasMasterMatrix;
 
 uniform vec2[MAX_CALLPARAMETERS] TexOffset;
 uniform vec2[MAX_CALLPARAMETERS] TexSize;
 
 void main() {
-	mat4 modelMatrix;
-	if (HasMasterMatrix) 
-		modelMatrix = masterMatrix * model[gl_InstanceID];
-	else modelMatrix = model[gl_InstanceID];
+	mat4 modelMatrix = model[gl_InstanceID];
 
 	vTexture = aTexture * TexSize[gl_InstanceID] + TexOffset[gl_InstanceID];
 
@@ -39,7 +32,7 @@ void main() {
 	if (!HasColors) vColor = vec4(1,1,1,1);
 	else vColor = aColor;
 
-	gl_Position = projection * view * vec4(vPosition, 1.0);
+	gl_Position = projectView * vec4(vPosition, 1.0);
 
 	vec3 T = normalize(vec3(modelMatrix * vec4(aTangent, 0.0)));
 	vec3 N = normalize(vec3(modelMatrix * vec4(aNormal, 0.0)));

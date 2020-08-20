@@ -5,12 +5,30 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace SM.Core.Renderer
 {
+    /// <summary>
+    /// This manages the uniform.
+    /// </summary>
     public struct Uniform
     {
+        /// <summary>
+        /// This contains the location for the uniform.
+        /// </summary>
         private int Location;
+        /// <summary>
+        /// This contains the type for the uniform.
+        /// </summary>
         private ActiveUniformType Type;
+        /// <summary>
+        /// This contains the Parent collection of this uniform.
+        /// </summary>
         internal UniformCollection Parent;
 
+        /// <summary>
+        /// This create a new uniform manager
+        /// </summary>
+        /// <param name="location">Location id</param>
+        /// <param name="parent">Parent collection</param>
+        /// <param name="type">Type of the uniform</param>
         public Uniform(int location, UniformCollection parent, ActiveUniformType type)
         {
             Location = location;
@@ -26,13 +44,16 @@ namespace SM.Core.Renderer
         public void SetUniform1(int count, params int[] values) => GL.Uniform1(Location, count, values);
         public void SetUniform1(int count, ref int values) => GL.Uniform1(Location, count, ref values);
 
+
         public void SetUniform1(uint value) => GL.Uniform1(Location, value);
         public void SetUniform1(int count, params uint[] values) => GL.Uniform1(Location, count, values);
         public void SetUniform1(int count, ref uint values) => GL.Uniform1(Location, count, ref values);
 
+
         public void SetUniform1(float value) => GL.Uniform1(Location, value);
         public void SetUniform1(int count, params float[] values) => GL.Uniform1(Location, count, values);
         public void SetUniform1(int count, ref float value) => GL.Uniform1(Location, count, ref value);
+
 
         public void SetUniform1(double value) => GL.Uniform1(Location, value);
         public void SetUniform1(int count, params double[] values) => GL.Uniform1(Location, count, values);

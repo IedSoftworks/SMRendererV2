@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using OpenTK;
+using SM.Data.Types;
 using SM.Data.Types.VectorTypes;
 using SM.Render.ShaderPrograms;
 using SM.Scene.Cameras;
@@ -12,27 +14,27 @@ namespace SM.Scene.Draw
         private CallParameter parameter = new CallParameter();
         private CallParameter[] Parameters;
 
-        public new Position Position
+        public new Vector Position
         {
             get => parameter.Position;
             set => parameter.Position = value;
         }
-        public new Size Size
+        public new Vector Size
         {
             get => parameter.Size;
             set => parameter.Size = value;
         }
-        public new Rotation Rotation
+        public new Vector Rotation
         {
             get => parameter.Rotation;
             set => parameter.Rotation = value;
         }
-        public Position TextureOffset
+        public Vector TextureOffset
         {
             get => parameter.TextureOffset;
             set => parameter.TextureOffset = value;
         }
-        public Size TextureSize
+        public Vector TextureSize
         {
             get => parameter.TextureSize;
             set => parameter.TextureSize = value;
@@ -47,7 +49,7 @@ namespace SM.Scene.Draw
         {
             base.Prepare(delta);
 
-            Vector2 texSize = Material.DiffuseTexture != null ? new Vector2(Material.DiffuseTexture.Width, Material.DiffuseTexture.Height) : new Vector2(1);
+            Vector2 texSize = Material.Texture != null ? new Vector2(Material.Texture.Width, Material.Texture.Height) : new Vector2(1);
             parameter.CalcModelMatrix(texSize);
         }
 

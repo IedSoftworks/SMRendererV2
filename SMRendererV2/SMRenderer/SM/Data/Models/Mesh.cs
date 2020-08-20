@@ -16,6 +16,7 @@ namespace SM.Data.Models
         public override ModelData UVs { get; } = new ModelData(pointerSize:2);
         public override ModelData VertexColors { get; } = new ModelData(pointerSize: 4);
         public virtual ModelData Tangents { get; } = new ModelData();
+        public override int[] Indices { get; set; }
 
         public override int BufferSizeMultiplier { get; } = 4;
         public override PrimitiveType PrimitiveType { get; set; } = PrimitiveType.Triangles;

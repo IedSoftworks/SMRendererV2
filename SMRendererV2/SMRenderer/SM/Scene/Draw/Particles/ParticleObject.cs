@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenTK;
 using SM.Core.Exceptions;
+using SM.Data.Types;
 using SM.Data.Types.VectorTypes;
+using SM.Utility;
 
 namespace SM.Scene.Draw.Particles
 {
     public abstract class ParticleObject
     {
-        private ulong _lastFrame = 0;
-
         public Particle[] Particles { get; private set; }
 
         public bool Ready { get; private set; } = false;
@@ -31,19 +31,19 @@ namespace SM.Scene.Draw.Particles
 
             for (int i = 0; i < Amount; i++)
             {
-                Direction direction = MotionAlgorithm(i);
+                Vector direction = MotionAlgorithm(i);
                 direction.Normalize();
 
                 Quaternion quaternion = new Quaternion(0,0,0);
                 if (RotateTowardsOrigin)
                     quaternion = Matrix4.LookAt(Vector3.Zero, direction, Vector3.UnitY).ExtractRotation().Inverted();
 
-                direction.Mul(VariableSpeeds ? (float)SMGlobals.Randomizer.NextDouble() * MaxSpeed + MinSpeed : MaxSpeed);
+                direction.Mul(VariableSpeeds ? Randomize.GetFloat(MinSpeed, MaxSpeed) : MaxSpeed);
 
                 Particles[i] = new Particle() 
                 {
                     Direction = direction, 
-                    Size = new Size(VariableSizes ? (float)SMGlobals.Randomizer.NextDouble() * MaxSize + .1f : .1f),
+                    Size = new Vector(VariableSizes ? Randomize.GetFloat(.1f, MaxSize) : .1f),
                     Rotation = quaternion
                 };
             }
@@ -51,6 +51,6 @@ namespace SM.Scene.Draw.Particles
             Ready = true;
         }
 
-        public abstract Direction MotionAlgorithm(int index);
+        public abstract Vector MotionAlgorithm(int index);
     }
 }
