@@ -1,22 +1,24 @@
-﻿using OpenTK;
+﻿using System.Drawing.Drawing2D;
+using OpenTK;
 using SM.Core.Models;
 using SM.Data.Types;
+using SM.Data.Types.Extensions;
 using SM.Data.Types.VectorTypes;
 
 namespace SM.Scene.Draw
 {
     public class CallParameter
     {
-        private Position _position = new Position();
-        private Size _size = new Size();
-        private Rotation _rotation = new Rotation();
+        private Vector _position = new Vector();
+        private Vector _size = new Vector();
+        private Vector _rotation = new Vector();
 
-        private Position _textureOffset = new Position();
-        private Size _textureSize = new Size(-1);
+        private Vector _textureOffset = new Vector();
+        private Vector _textureSize = new Vector(-1);
 
         public bool RequireUpdate { get; private set; } = true;
 
-        public virtual Position Position
+        public virtual Vector Position
         {
             get => _position;
             set
@@ -25,7 +27,7 @@ namespace SM.Scene.Draw
                 _position = value;
             }
         }
-        public virtual Size Size {
+        public virtual Vector Size {
             get => _size;
             set
             {
@@ -34,7 +36,7 @@ namespace SM.Scene.Draw
             }
         }
 
-        public virtual Rotation Rotation
+        public virtual Vector Rotation
         {
             get => _rotation;
             set
@@ -44,7 +46,7 @@ namespace SM.Scene.Draw
             }
         }
 
-        public virtual Position TextureOffset
+        public virtual Vector TextureOffset
         {
             get => _textureOffset;
             set
@@ -53,7 +55,7 @@ namespace SM.Scene.Draw
                 _textureOffset = value;
             }
         }
-        public virtual Size TextureSize
+        public virtual Vector TextureSize
         {
             get => _textureSize;
             set
@@ -80,7 +82,7 @@ namespace SM.Scene.Draw
         internal void CalcModelMatrix(Vector2 textureSize)
         {
             if (!RequireUpdate) return;
-            ModelMatrix = (Matrix4) _size * _rotation * _position;
+            ModelMatrix = MatrixCalc.CreateModelMatrix(_size, _rotation, _position);
 
             TextureSizeNormal = (_textureSize.X < 0 || _textureSize.Y < 0) ? new Vector2(1) : Vector2.Divide(_textureSize, textureSize);
             TextureOffsetNormal = Vector2.Divide(_textureOffset, textureSize);
@@ -88,7 +90,7 @@ namespace SM.Scene.Draw
             RequireUpdate = false;
         }
 
-        private void UpdateEvents(VectorType old, VectorType newVal)
+        private void UpdateEvents(Vector old, Vector newVal)
         {
             old.Change -= UpdateEvent;
             newVal.Change += UpdateEvent;
@@ -96,7 +98,7 @@ namespace SM.Scene.Draw
             RequireUpdate = true;
         }
 
-        private void UpdateEvent(VectorType vector, int id, float old, float newVal)
+        private void UpdateEvent(Vector vector, int id, float old, float newVal)
         {
             RequireUpdate = true;
         }

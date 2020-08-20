@@ -60,8 +60,8 @@ namespace SM.Data.Models.Import
 
                     Assimp.Material mat = root.Materials[i];
 
-                    if (mat.HasColorDiffuse) material.DiffuseColor = new Color4(mat.ColorDiffuse.R, mat.ColorDiffuse.G, mat.ColorDiffuse.B, mat.ColorDiffuse.A);
-                    if (mat.HasTextureDiffuse) material.DiffuseTexture = new Texture(new Bitmap(mat.TextureDiffuse.FilePath), TextureMinFilter.Linear, OpenTK.Graphics.OpenGL4.TextureWrapMode.ClampToEdge);
+                    if (mat.HasColorDiffuse) material.Color = new Color4(mat.ColorDiffuse.R, mat.ColorDiffuse.G, mat.ColorDiffuse.B, mat.ColorDiffuse.A);
+                    if (mat.HasTextureDiffuse) material.Texture = new Texture(new Bitmap(mat.TextureDiffuse.FilePath), TextureMinFilter.Linear, OpenTK.Graphics.OpenGL4.TextureWrapMode.ClampToEdge);
                 }
             }
 

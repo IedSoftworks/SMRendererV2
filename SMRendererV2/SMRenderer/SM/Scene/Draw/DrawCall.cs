@@ -7,13 +7,13 @@ using SM.Scene.Draw.Base;
 
 namespace SM.Scene.Draw
 {
-    public class DrawCall : DrawingBase
+    public class DrawCall : ModelPositioning
     {
         public ICollection<CallParameter> DrawCallParameters = new List<CallParameter>();
 
         public override void Prepare(double delta)
         {
-            Vector2 texSize = Material.DiffuseTexture != null ? new Vector2(Material.DiffuseTexture.Width, Material.DiffuseTexture.Height) : new Vector2(1);
+            Vector2 texSize = Material.Texture != null ? new Vector2(Material.Texture.Width, Material.Texture.Height) : new Vector2(1);
             foreach (CallParameter cp in DrawCallParameters) cp.CalcModelMatrix(texSize);
         }
 

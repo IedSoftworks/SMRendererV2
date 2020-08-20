@@ -1,4 +1,4 @@
-﻿#version 330
+﻿#version 150
 struct Material {
 	sampler2D DiffuseTexture;
 	sampler2D SpecularTexture;

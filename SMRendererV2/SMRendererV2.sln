@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SM", "SMRenderer\SM\SM.cspr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SM.Core", "SMRenderer\SM.Core\SM.Core.csproj", "{1D351CC8-D673-49E9-A016-7AA435531743}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMLauncher", "SMRenderer\SMLauncher\SMLauncher.csproj", "{631BE0B9-6D0A-48BB-8B64-2F28042656D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{1D351CC8-D673-49E9-A016-7AA435531743}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D351CC8-D673-49E9-A016-7AA435531743}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D351CC8-D673-49E9-A016-7AA435531743}.Release|Any CPU.Build.0 = Release|Any CPU
+		{631BE0B9-6D0A-48BB-8B64-2F28042656D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{631BE0B9-6D0A-48BB-8B64-2F28042656D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{631BE0B9-6D0A-48BB-8B64-2F28042656D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{631BE0B9-6D0A-48BB-8B64-2F28042656D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -36,6 +42,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{ED316D46-FAB5-4996-9012-E8304F73BD18} = {B33FB396-A22C-445E-8AC8-3BE3DB0D4AA3}
 		{1D351CC8-D673-49E9-A016-7AA435531743} = {B33FB396-A22C-445E-8AC8-3BE3DB0D4AA3}
+		{631BE0B9-6D0A-48BB-8B64-2F28042656D7} = {B33FB396-A22C-445E-8AC8-3BE3DB0D4AA3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A1B6B6CC-7F25-4452-B1F6-124285E689C4}

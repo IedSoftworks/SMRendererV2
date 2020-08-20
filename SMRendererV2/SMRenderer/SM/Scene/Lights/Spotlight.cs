@@ -1,6 +1,7 @@
 ﻿using System;
 using OpenTK;
 using SM.Core.Renderer;
+using SM.Data.Types;
 using SM.Data.Types.VectorTypes;
 
 namespace SM.Scene.Lights
@@ -9,13 +10,13 @@ namespace SM.Scene.Lights
     {
         public override LightType Type { get; set; } = LightType.Spotlight;
 
-        public Position Position;
-        public Direction Direction;
+        public Vector Position;
+        public Vector Direction;
 
         public float OuterCutoff = 15;
         public float InnerCutoff = 12.5f;
 
-        public Spotlight(Position position, Direction direction)
+        public Spotlight(Vector position, Vector direction)
         {
             Position = position;
             Direction = direction;

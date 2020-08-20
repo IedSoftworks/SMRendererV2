@@ -17,6 +17,11 @@ namespace SM.Render.ShaderPrograms
 
         public override ShaderFile FragmentFiles { get; } = ShaderCatalog.MainFragmentFile;
 
+        public override Dictionary<string, int> FragData { get; } = new Dictionary<string, int>()
+        {
+            {"color", 0}
+        };
+
         public GeneralRenderer()
         {
             RenderProgramCollection.General = this;
@@ -42,7 +47,9 @@ namespace SM.Render.ShaderPrograms
             }
 
             ShaderCatalog.SetMainFragmentUniforms(U, material);
+            Scene.Scene.Current.Lights.SetUniforms(U);
 
+            Matrix4 mat = world * view;
             int modelLocation = U["model"].Value;
             int texOffsetLocation = U["TexOffset"].Value;
             int texSizeLocation = U["TexSize"].Value;
@@ -59,6 +66,7 @@ namespace SM.Render.ShaderPrograms
 
                 i++;
             }
+
 
             GL.DrawArraysInstanced(model.PrimitiveType, 0, model.Vertices.Count, i);
 

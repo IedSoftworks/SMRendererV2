@@ -1,12 +1,14 @@
-﻿using SM.Data.Types.VectorTypes;
+﻿using SM.Data.Types;
+using SM.Data.Types.VectorTypes;
+using SM.Utility;
 
 namespace SM.Scene.Draw.Particles
 {
     public class CubeParticles : ParticleObject
     {
-        public override Direction MotionAlgorithm(int index)
+        public override Vector MotionAlgorithm(int index)
         {
-            return new Direction((float) (SMGlobals.Randomizer.NextDouble() * 2 - 1), (float)(SMGlobals.Randomizer.NextDouble() * 2 - 1), (float)(SMGlobals.Randomizer.NextDouble() * 2 - 1));
+            return new Vector(Randomize.GetFloat(1,2), Randomize.GetFloat(1, 2), Randomize.GetFloat(1, 2));
         }
     }
 }

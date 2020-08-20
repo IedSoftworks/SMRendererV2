@@ -19,9 +19,9 @@ namespace SM.Render.ShaderFiles
         });
         public static ShaderFile MainFragmentFile = new ShaderFile(AssemblyUtility.ReadAssemblyFile("Render.ShaderFiles.MainShader.main.frag"))
         {
-            Extentions = new List<ShaderFile>()
+            Extensions = new List<ShaderFile>()
             {
-                new ShaderFile(AssemblyUtility.ReadAssemblyFile("Render.ShaderFiles.MainShader.lighting.frag"), new Dictionary<string, string>() {{ "maxLights", SMGlobals.MAX_LIGHTS.ToString() } })
+                //new ShaderFile(AssemblyUtility.ReadAssemblyFile("Render.ShaderFiles.MainShader.lighting.frag"), new Dictionary<string, string>() {{ "maxLights", SMGlobals.MAX_LIGHTS.ToString() } })
             }
         };
 
@@ -41,11 +41,11 @@ namespace SM.Render.ShaderFiles
 
         public static void SetMainFragmentUniforms(UniformCollection u, Material material)
         {
-            bool useTex = material.DiffuseTexture != null;
+            bool useTex = material.Texture != null;
             bool useTex2 = material.SpecularTexture != null;
             bool useTex3 = material.NormalMap != null;
             if (useTex)
-                u["material.DiffuseTexture"]?.SetTexture(material.DiffuseTexture);
+                u["material.DiffuseTexture"]?.SetTexture(material.Texture);
             if (useTex2)
                 u["material.SpecularTexture"]?.SetTexture(material.SpecularTexture);
             if (useTex3)
@@ -55,20 +55,9 @@ namespace SM.Render.ShaderFiles
             u["material.UseSpecularTexture"]?.SetUniform1(useTex2);
             u["material.UseNormalMap"]?.SetUniform1(useTex3);
             u["material.UseLight"]?.SetUniform1(material.AllowLight);
-            u["material.Diffuse"]?.SetColor(material.DiffuseColor);
+            u["material.Diffuse"]?.SetColor(material.Color);
             u["material.Specular"]?.SetUniform3(material.SpecularColor);
             u["material.Shininess"]?.SetUniform1(material.Shininess);
-
-            Lights lights = Scene.Scene.Current.Lights;
-            u["AmbientLight"]?.SetUniform3(lights.Ambient);
-            u["UsedLights"]?.SetUniform1(lights.Count);
-            u["ViewPosition"]?.SetUniform3(Scene.Scene.CurrentCam.Position);
-
-            for (int i = 0; i < lights.Count; i++)
-            {
-                lights[i].SetUniforms(u, i);
-            }
-
 
             material.Modifiers.ForEach(a => a.SetMaterialUniforms(u));
         }

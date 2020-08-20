@@ -40,7 +40,9 @@ namespace SM.Render.ShaderPrograms
 
             U["HasColors"]?.SetUniform1(particleObject.Mesh.VertexColors.HadContent);
             U["Fade"]?.SetUniform1(particleObject.Fade);
+            
             ShaderCatalog.SetMainFragmentUniforms(U, particleObject.Material);
+            Scene.Scene.Current.Lights.SetUniforms(U);
 
             GL.BindVertexArray(particleObject.Mesh.VAO); 
             int modelLocation = U["Matrices"].Value;

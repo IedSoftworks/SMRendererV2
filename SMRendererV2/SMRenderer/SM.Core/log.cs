@@ -8,24 +8,48 @@ using SM.Core.Enums;
 
 namespace SM.Core
 {
+    /// <summary>
+    /// Logging
+    /// </summary>
     public class Log
     {
         private static Log Current;
         private static bool IsInitilized;
 
-        public static bool UseOwnEndEvent = true;
+        /// <summary>
+        /// This prevents the crash-handler to prepare itself.
+        /// <para>Default: true (To enable VSDebugger, etc. to work properly.)</para>
+        /// <para>It is recommended to disable it at release.</para>
+        /// </summary>
+        public static bool UseOwnCrashEvent = true;
 
-        public string Name = "Default";
-
+        /// <summary>
+        /// This allows to set preset, depending on what target the log is written.
+        /// </summary>
         public static Dictionary<LogWriteTarget, string> LogPresets = new Dictionary<LogWriteTarget, string>() {
             { LogWriteTarget.LogFile, "<%date% %time%> [%type%] %value%" },
             { LogWriteTarget.Console, "[%type%] %value%" },
             { LogWriteTarget.VSDebugger, "[%type%] %value%" },
         };
 
+        /// <summary>
+        /// This sets the default write target.
+        /// <para>Default: All</para>
+        /// </summary>
         public static LogWriteTarget DefaultWriteTarget = LogWriteTarget.All;
 
         private StreamWriter writer;
+
+        /// <summary>
+        /// The internal name of the log file.
+        /// </summary>
+        public string Name = "Default";
+
+        /// <summary>
+        /// Creates a new log file.
+        /// </summary>
+        /// <param name="path">Path for the log file</param>
+        /// <param name="compressionFolder">Folder to store compressed log files, if the file already exists. If none set, it just override the file.</param>
         public Log(string path = "sm.log", string compressionFolder = "")
         {
             if (!IsInitilized) Initilize();
@@ -60,12 +84,41 @@ namespace SM.Core
 
             AppDomain.CurrentDomain.DomainUnload += (sender, args) => { Close(); };
         }
+        /// <summary>
+        /// Set this log as current.
+        /// </summary>
+        public void Enable()
+        {
+            Current?.Disable($"New log '{Name}' enabled.");
+            Current = this;
+            Write(LogWriteType.Info, $"Enabled log '{Name}'");
+        }
+        /// <summary>
+        /// Disables the log file.
+        /// </summary>
+        /// <param name="reason"></param>
+        public void Disable(string reason = "Programer called")
+        {
+            Write(LogWriteType.Info, $"Disabled log '{Name}'. Reason: '{reason}'");
+            Current = null;
+        }
+        /// <summary>
+        /// Closes the log file.
+        /// </summary>
+        public void Close()
+        {
+            writer.WriteLine("# Closed at: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
+            writer.Close();
+        }
 
+        /// <summary>
+        /// Setup the log system.
+        /// </summary>
         public static void Initilize()
         {
             Write(LogWriteType.Info, "Initilize log system");
 
-            if (!UseOwnEndEvent) AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            if (!UseOwnCrashEvent) AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 Write(args.IsTerminating ? LogWriteType.UnexpectedCriticalError : LogWriteType.UnexpectedError,
                     GLDebug.AdvDebugging ? args.ExceptionObject : ((Exception)args.ExceptionObject).Message, LogWriteTarget.LogFile | LogWriteTarget.VSDebugger);
@@ -79,35 +132,42 @@ namespace SM.Core
             IsInitilized = true;
         }
 
-        public void Enable()
-        {
-            Current?.Disable($"New log '{Name}' enabled.");
-            Current = this;
-            Write(LogWriteType.Info, $"Enabled log '{Name}'");
-        }
-
-        public void Disable(string reason = "Programer called")
-        {
-            Write(LogWriteType.Info, $"Disabled log '{Name}'. Reason: '{reason}'");
-            Current = null;
-        }
-
-        public void Close()
-        {
-            writer.WriteLine("# Closed at: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
-            writer.Close();
-        }
-
+        /// <summary>
+        /// Write multiple logs with the default write target
+        /// </summary>
+        /// <typeparam name="T">Type of value</typeparam>
+        /// <param name="type">Type of log</param>
+        /// <param name="values">values</param>
         public static void Write<T>(LogWriteType type, params T[] values) => Write(type.ToString(), values);
+        /// <summary>
+        /// Write multiple logs with the default write target
+        /// </summary>
+        /// <typeparam name="T">Type of value</typeparam>
+        /// <param name="type">Type of log</param>
+        /// <param name="values">values</param>
         public static void Write<T>(string type, params T[] values)
         {
             for (int i = 0; i < values.Length; i++) 
                 Write(type, values[i]);
         }
 
+        /// <summary>
+        /// Write a log
+        /// </summary>
+        /// <typeparam name="T">Type of value</typeparam>
+        /// <param name="type">Type of log</param>
+        /// <param name="value">value</param>
+        /// <param name="target">Log target</param>
         public static void Write<T>(LogWriteType type, T value, LogWriteTarget target = LogWriteTarget.Default) =>
             Write(type.ToString(), value, target);
 
+        /// <summary>
+        /// Write a log
+        /// </summary>
+        /// <typeparam name="T">Type of value</typeparam>
+        /// <param name="type">Type of log</param>
+        /// <param name="value">value</param>
+        /// <param name="target">Log target</param>
         public static void Write<T>(string type, T value, LogWriteTarget target = LogWriteTarget.Default)
         {
             if (target == LogWriteTarget.Default)
@@ -121,6 +181,13 @@ namespace SM.Core
                 Current?.writer.WriteLine(ProcessPreset(LogWriteTarget.LogFile, type, value.ToString()));
         }
 
+        /// <summary>
+        /// Processes a preset.
+        /// </summary>
+        /// <param name="target">The log target</param>
+        /// <param name="type">The type of a log</param>
+        /// <param name="value">The value</param>
+        /// <returns></returns>
         public static string ProcessPreset(LogWriteTarget target, string type, string value)
         {
             string preset = LogPresets[target];

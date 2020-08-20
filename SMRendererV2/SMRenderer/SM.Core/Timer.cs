@@ -5,7 +5,7 @@ using System.Linq;
 namespace SM.Core
 {
     /// <summary>
-    /// Timer...
+    /// Timer and Interval
     /// </summary>
     [Serializable]
     public class Timer
@@ -15,6 +15,10 @@ namespace SM.Core
         /// </summary>
         public static List<Timer> ActiveTimers = new List<Timer>();
 
+        /// <summary>
+        /// Automaticly stops the timer
+        /// <para>Default: true</para>
+        /// </summary>
         public virtual bool AutoStop { get; } = true;
         /// <summary>
         /// The current time in seconds
@@ -38,9 +42,13 @@ namespace SM.Core
         public event Action<Timer> Cancel;
         /// <summary>
         /// Determent if the timer should repeat itself
+        /// <para>Default: false</para>
         /// </summary>
         public bool Repeat = false;
 
+        /// <summary>
+        /// Returns true, if the timer is already active.
+        /// </summary>
         public bool Active => ActiveTimers.Contains(this);
 
         /// <summary>
@@ -82,7 +90,7 @@ namespace SM.Core
         /// <para>Runs at the Window update event. Better never call this.</para>
         /// </summary>
         /// <param name="delta">Deltatime from the update event</param>
-        public virtual void PerformTick(double delta)
+        public virtual void PerformTick(float delta)
         {
             CurrentTime += delta;
             if (AutoStop && CurrentTime >= TargetTime) Stop(false);
@@ -105,7 +113,12 @@ namespace SM.Core
             else End?.Invoke(this);
         }
 
-        internal static void RunTick(double deltaSeconds)
+        /// <summary>
+        /// This performs a tick for the timer.
+        /// <para>Unless you working on the main project, don't call it!</para>
+        /// </summary>
+        /// <param name="deltaSeconds"></param>
+        public static void RunTick(float deltaSeconds)
         {
             ActiveTimers.ToList().ForEach(a => a.PerformTick(deltaSeconds));
         }

@@ -5,15 +5,32 @@ using SM.Core.Exceptions;
 
 namespace SM.Core.Renderer.Framebuffers
 {
+    /// <summary>
+    /// This contains all color attachments and make sure, that it not exceds the maximal capacity.
+    /// </summary>
     public class ColorAttachmentCollection : List<ColorAttachment>
     {
+        /// <summary>
+        /// This returns the color attachment with the variable name.
+        /// <para>Returns null, if not existing.</para>
+        /// </summary>
+        /// <param name="variableName">The variable its looking for.</param>
+        /// <returns></returns>
         public ColorAttachment this[string variableName] => this.FirstOrDefault(a => a.FragOutputVariable == variableName);
 
-        public ColorAttachmentCollection(float scaling = 1)
+        /// <summary>
+        /// Creates a collection.
+        /// </summary>
+        public ColorAttachmentCollection()
         {
             Capacity = 32;
         }
 
+        /// <summary>
+        /// Adds a new color attachment.
+        /// </summary>
+        /// <param name="variable">The variable it should listen to.</param>
+        /// <param name="scale">Sets the scale</param>
         public void Add(string variable, float scale = 1)
         {
             if (Count >= 32)
@@ -23,6 +40,11 @@ namespace SM.Core.Renderer.Framebuffers
             Add(new ColorAttachment(variable, id, scale));
         }
 
+        /// <summary>
+        /// Adds multiple color attachments.
+        /// <para>All color attachments have the scale 1</para>
+        /// </summary>
+        /// <param name="variableNames">The variable names they should listen to.</param>
         public void Add(params string[] variableNames)
         {
             if (Count >= 32)
@@ -47,6 +69,10 @@ namespace SM.Core.Renderer.Framebuffers
                 Log.Write(LogWriteType.Warning, "Following ColorAttachments exceds the capacity of possible color attachments: " + leftVariables);
         }
 
+        /// <summary>
+        /// Searches for every free ID.
+        /// </summary>
+        /// <returns>A list of free IDs</returns>
         public List<int> GetFreeIDs()
         {
             List<int> freeIds = new List<int>();

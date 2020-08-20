@@ -10,11 +10,11 @@ namespace SM.Animations
         private AnimationStruct _aStruct;
         public int CurrentKeyframeIndex { get; private set; } = 0;
         public Keyframe CurrentKeyframe { get; private set; }
-        public AnimatableType Obj { get; }
+        public Vector Obj { get; }
         public float KeyframeTimer { get; private set; }
         public float KeyframeTargetTime { get; private set; }
 
-        public Animation(AnimatableType obj, AnimationStruct aStruct, bool repeat) : base(aStruct.Time, repeat)
+        public Animation(Vector obj, AnimationStruct aStruct, bool repeat) : base(aStruct.Time, repeat)
         {
             _aStruct = aStruct;
             Obj = obj;
@@ -29,12 +29,12 @@ namespace SM.Animations
             NextKeyframe();
         }
 
-        public override void PerformTick(double delta)
+        public override void PerformTick(float delta)
         {
             if (KeyframeTimer >= KeyframeTargetTime) NextKeyframe();
 
-            KeyframeTimer += (float)delta;
-            Obj.Set(_origin.Value + _moveVector * _aStruct.CalculationFunction(this, (float)delta));
+            KeyframeTimer += delta;
+            Obj.Set(_origin.Value + _moveVector * _aStruct.CalculationFunction(this, delta));
 
             base.PerformTick(delta);
         }
@@ -43,6 +43,8 @@ namespace SM.Animations
         private void NextKeyframe()
         {
             _origin = _aStruct.Keyframes[CurrentKeyframeIndex];
+
+            if (CurrentKeyframeIndex == _aStruct.KeyframeAmount - 1) Stop();
 
             CurrentKeyframeIndex++;
             KeyframeTimer = 0;

@@ -6,6 +6,7 @@ using OpenTK.Graphics.OpenGL4;
 using SM.Core.Renderer;
 using SM.Data.Fonts;
 using SM.Data.Models;
+using SM.Data.Types;
 using SM.Data.Types.VectorTypes;
 using SM.Render.ShaderPrograms;
 using SM.Scene.Cameras;
@@ -21,14 +22,14 @@ namespace SM.Scene.Draw
 
         public Font Font
         {
-            get => (Font)Material.DiffuseTexture;
-            set => Material.DiffuseTexture = value;
+            get => (Font)Material.Texture;
+            set => Material.Texture = value;
         }
 
         public Color FontColor
         {
-            get => Material.DiffuseColor;
-            set => Material.DiffuseColor = value;
+            get => Material.Color;
+            set => Material.Color = value;
         }
 
         public float FontSize
@@ -57,7 +58,7 @@ namespace SM.Scene.Draw
 
         public override void Prepare(double delta)
         {
-            Vector2 texSize = Material.DiffuseTexture != null ? new Vector2(Material.DiffuseTexture.Width, Material.DiffuseTexture.Height) : new Vector2(1);
+            Vector2 texSize = Material.Texture != null ? new Vector2(Material.Texture.Width, Material.Texture.Height) : new Vector2(1);
             foreach(CallParameter cp in _parameters) cp.CalcModelMatrix(texSize);
 
             ModelMatrix = Matrix4.CreateTranslation(-Width / 2, 0, 0);
@@ -97,10 +98,10 @@ namespace SM.Scene.Draw
 
                 CallParameter cp = new CallParameter()
                 {
-                    Position = new Position(x, 0),
-                    Size = new Size(width, 1),
-                    TextureSize = new Size(charParameter.Size.X, charParameter.Size.Y),
-                    TextureOffset = new Position(charParameter.X, 0)
+                    Position = new Vector(x, 0),
+                    Size = new Vector(width, 1),
+                    TextureSize = new Vector(charParameter.Size.X, charParameter.Size.Y),
+                    TextureOffset = new Vector(charParameter.X, 0)
                 };
 
                 _parameters.Add(cp);
