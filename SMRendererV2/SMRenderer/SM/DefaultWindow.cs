@@ -93,8 +93,18 @@ namespace SM
             Scene.Scene.Current.DrawAll(e.Time);
         }
 
+        bool Screenshot = true;
+
         public override void AfterRender(FrameEventArgs e, GLWindow window)
         {
+            if (Screenshot)
+            {
+                window.TakeScreenshot(Framebuffer.ScreenFramebuffer, ReadBufferMode.Back, 0, 0,
+                    window.Width, window.Height).Save("TestScreenshot-01.png");
+
+                Screenshot = false;
+            }
+
             return;
             Framebuffer.ScreenFramebuffer.Activate(clear: true);
             for (var i = 0; i < PostProcessManager.PostProcesses.Count; i++)

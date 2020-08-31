@@ -47,7 +47,7 @@ namespace TestProject
 
             if (param.Contains("-advdebug")) GLDebug.AdvDebugging = true;
 
-            Log.UseOwnCrashEvent = true;
+            Log.UseOwnCrashEvent = false;
 
             Arial = new Font(@"C:\Windows\Fonts\Arial.ttf");
 

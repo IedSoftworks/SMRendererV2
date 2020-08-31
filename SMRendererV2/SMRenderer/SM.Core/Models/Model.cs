@@ -63,10 +63,6 @@ namespace SM.Core.Models
         /// </summary>
         public abstract ModelData VertexColors { get; }
         /// <summary>
-        /// Stores the object indices for the object.
-        /// </summary>
-        public abstract int[] Indices { get; set; }
-        /// <summary>
         /// Sets the primitive type of the object
         /// </summary>
         public abstract PrimitiveType PrimitiveType { get; set; }

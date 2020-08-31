@@ -2,7 +2,6 @@
 using OpenTK.Graphics.OpenGL4;
 using SM.Core.Enums;
 using SM.Core.Exceptions;
-using SM.Core.Models;
 using SM.Core.Renderer.Framebuffers;
 using SM.Core.Renderer.Shaders;
 
@@ -90,20 +89,11 @@ namespace SM.Core.Renderer
             RendererCollection.Add(this);
         }
 
-
-        public void DrawObject(Model mesh, int amount = 1)
-        {
-            if (mesh.Indices != null)
-                GL.DrawElementsInstanced(mesh.PrimitiveType, mesh.Indices.Length, DrawElementsType.UnsignedInt, mesh.Indices, amount);
-            else
-                GL.DrawArraysInstanced(mesh.PrimitiveType, 0, mesh.Vertices.Count, amount);
-        }
-
         /// <summary>
         /// This cleans up the data after the shader program has been run.
         /// </summary>
         public void CleanUp()
-        { 
+        {
             GL.BindVertexArray(0);
             GL.BindTexture(TextureTarget.Texture2D, 0);
             U.NextTexture = 0;

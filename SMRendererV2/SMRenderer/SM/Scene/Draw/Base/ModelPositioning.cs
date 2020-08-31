@@ -10,7 +10,7 @@ namespace SM.Scene.Draw.Base
         public override Matrix4 ModelMatrix { get; set; }
 
         public Vector Position = new Vector();
-        public Vector Size = new Vector(1);
+        public Vector Size = new Vector();
         public Vector Rotation = new Vector();
 
         public override void Prepare(double delta)

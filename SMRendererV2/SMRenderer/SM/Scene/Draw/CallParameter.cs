@@ -10,7 +10,7 @@ namespace SM.Scene.Draw
     public class CallParameter
     {
         private Vector _position = new Vector();
-        private Vector _size = new Vector(1);
+        private Vector _size = new Vector();
         private Vector _rotation = new Vector();
 
         private Vector _textureOffset = new Vector();

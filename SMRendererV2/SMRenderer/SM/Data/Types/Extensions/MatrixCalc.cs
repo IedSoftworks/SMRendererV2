@@ -12,9 +12,7 @@ namespace SM.Data.Types.Extensions
 
         public static Matrix4 CreateModelMatrix(Vector size, Vector rotation, Vector position)
         {
-            return CreateScale(size) * 
-                   CreateRotation(rotation) *
-                   CreateTranslation(position);
+            return CreateScale(size) * CreateRotation(rotation) * CreateTranslation(position);
         }
     }
 }
